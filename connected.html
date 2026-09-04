@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css"><script type="module" src="connected.js"></script></head>
+<body><main>
+ <div class="heading"><div><h1>PDV Nota 10</h1><p>Acesso à campanha · Outubro a dezembro de 2026</p></div><a href="/">Demonstração separada</a></div>
+ <p class="notice">Integração em desenvolvimento. Clientes usam o Firestore real após a aplicação das regras desta etapa. Roteiros, avaliações e fotos ainda não estão conectados. Não importe a base real antes da validação das regras.</p>
+ <section class="panel spaced" id="login-panel">
+  <h2>Entrar</h2><p>Use o e-mail e a senha cadastrados para você no Firebase Authentication.</p>
+  <form id="login-form" class="form-grid">
+   <label>E-mail<input name="email" type="email" autocomplete="username" maxlength="254" required></label>
+   <label>Senha<input name="password" type="password" autocomplete="current-password" required></label>
+   <button class="primary" id="login-button" disabled>Entrar</button>
+  </form>
+  <p class="muted">Sem cadastro público. Seu perfil e seu supervisor são definidos pela administração. A sessão usa a persistência de sessão do Firebase; em aparelho compartilhado, use sempre Sair.</p>
+ </section>
+ <p id="session-status" class="notice spaced" role="status" aria-live="polite">Preparando acesso…</p>
+ <section class="panel spaced" id="profile-panel" hidden>
+  <h2>Seu acesso</h2><p id="profile-name"></p><p id="profile-role"></p>
+  <p id="profile-scope"></p>
+  <p class="muted">Nenhum dado demonstrativo foi importado para sua conta. As permissões do Firestore controlam o acesso aos clientes.</p>
+ </section>
+ <div id="session-actions" hidden><button id="refresh-profile">Conferir perfil novamente</button> <button id="logout">Sair</button></div>
+ <section class="panel spaced" id="clients-panel" hidden>
+  <h2>Clientes</h2>
+  <form id="real-lookup" class="form-grid"><label>Código do cliente<input name="code" required maxlength="64" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label><button>Consultar código</button></form>
+  <p id="lookup-result" class="client-result" aria-live="polite"></p>
+  <div id="client-admin" hidden>
+   <h3>Importar base de clientes</h3><p>Planilha XLSX ou CSV de até 5 MB. Colunas reconhecidas: Cliente ou Código, Nome 1 ou Razão social, Cidade, Bairro, Rua e número opcional. A primeira aba será utilizada. CNPJ e CEP não são enviados.</p>
+   <form id="real-clients-form" class="form-grid"><label>Planilha<input type="file" name="file" accept=".xlsx,.csv" required></label><button>Ler e conferir</button></form>
+   <p id="client-preview" class="notice"></p><button id="client-confirm" class="primary" disabled>Confirmar envio ao Firebase</button>
+   <h3 class="spaced">Base cadastrada</h3><p>Leitura de até 25 clientes por página, somente quando solicitada. A ordem é pelo código como texto.</p>
+   <button id="client-first">Carregar primeira página</button> <button id="client-next" disabled>Próxima página</button>
+   <div class="table-wrap"><table><thead><tr><th>Código</th><th>Razão social</th><th>Cidade</th><th>Bairro</th><th>Rua</th></tr></thead><tbody id="client-rows"></tbody></table></div>
+  </div>
+  <p id="clients-status" class="notice" role="status" aria-live="polite"></p>
+ </section>
+ <p><a href="firebase.html">Diagnóstico da configuração Firebase</a></p>
+</main></body></html>

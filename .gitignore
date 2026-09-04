@@ -4,3 +4,6 @@ dist/
 .env.*
 !.env.example
 .netlify/
+*-debug.log
+*-debug.*.log
+.firebase/

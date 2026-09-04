@@ -1,0 +1,38 @@
+// ETAPA CLIENTES. Testada no emulador; publicação remota é uma etapa separada.
+// Não é a política final da campanha: roteiros, conquistas, perfis e fotos continuam bloqueados.
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function active() {
+   return request.auth != null
+    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true
+    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin','supervisor','promoter']
+    && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role != 'promoter'
+      || (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.supervisorId is string
+       && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.supervisorId.size() > 0));
+  }
+  function admin() {
+   return active() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+  }
+  function text(value) { return value is string && value.size() <= 250; }
+  function validClient(code) {
+   let d=request.resource.data;
+   return d.keys().hasAll(['code','name','city','district','street','updatedBy','updatedAt'])
+    && d.keys().hasOnly(['code','name','city','district','street','updatedBy','updatedAt'])
+    && code.matches('^[A-Za-z0-9_-]{1,64}$') && d.code == code
+    && text(d.name) && d.name.size() > 0 && text(d.city) && text(d.district) && text(d.street)
+    && d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+  }
+  match /users/{uid} {
+   allow get: if request.auth != null && request.auth.uid == uid;
+   allow list, create, update, delete: if false;
+  }
+  match /clients/{code} {
+   allow get: if active();
+   allow list: if admin() && request.query.limit != null && request.query.limit <= 25;
+   allow create, update: if admin() && validClient(code);
+   allow delete: if false;
+  }
+  match /{document=**} { allow read, write: if false; }
+ }
+}

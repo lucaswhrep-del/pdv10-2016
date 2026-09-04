@@ -1,5 +1,9 @@
 # PDV Nota 10 — primeira versão demonstrativa
 
+## Integração atual
+
+`connected.html` oferece login real e módulo de clientes (importação confirmada, consulta exata e paginação administrativa). A demonstração principal permanece separada. 40 testes unitários e seis testes de regras/integração com Firestore Emulator passaram. As regras da etapa Clientes ainda precisam ser publicadas pelo administrador; instruções e limitações em `firebase/INTEGRATION.md`. Roteiros, equipe, conquistas, fotos e premiação ainda não estão conectados ao backend. Não liberar para operação da campanha.
+
 ## Estado para versionamento — 04/09/2026
 
 Repositório de destino: https://github.com/lucaswhrep-del/pdv10-2016. O nome do repositório contém 2016; a campanha permanece configurada para 2026.
