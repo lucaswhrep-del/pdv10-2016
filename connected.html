@@ -9,7 +9,7 @@
   <div class="portal-live"><i></i> Ambiente conectado</div>
  </div>
 </header>
-<nav class="portal-nav" aria-label="Navegação principal"><a href="#profile-panel">Meu acesso</a><a href="#clients-panel">Clientes</a><a href="#team-panel">Equipe</a><a href="/demo.html">Visão da campanha</a></nav>
+<nav class="portal-nav" aria-label="Navegação principal"><a href="#profile-panel">Meu acesso</a><a href="#campaign-panel">Campanha</a><a href="#clients-panel">Clientes</a><a href="#team-panel">Equipe</a></nav>
 <main class="portal-main">
  <div class="heading portal-heading"><div><span class="eyebrow">PAINEL DE GESTÃO</span><h1>Bem-vindo ao PDV Nota 10</h1><p>Gerencie os dados da campanha com acesso seguro e individual.</p></div></div>
  <section class="panel spaced" id="login-panel">
@@ -29,6 +29,7 @@
   <p class="muted">Acesso validado. Os módulos exibidos abaixo respeitam o seu perfil e os vínculos cadastrados.</p>
  </section>
  <div id="session-actions" hidden><button id="refresh-profile">Conferir perfil novamente</button> <button id="logout">Sair</button></div>
+ <section class="panel spaced" id="campaign-panel" hidden><div class="panel-head"><div><span class="eyebrow">RESULTADOS REAIS</span><h2>Painel da campanha</h2></div><label>Mês<select id="campaign-month"><option value="2026-10">Outubro</option><option value="2026-11">Novembro</option><option value="2026-12">Dezembro</option></select></label></div><div class="summary-grid"><div><span>Rota cumprida</span><b id="campaign-route">—</b><small id="campaign-stores"></small></div><div><span>Conquistas registradas</span><b id="campaign-conquests">0</b></div><div><span>Pontos em conquistas</span><b id="campaign-points">0</b></div></div><p id="campaign-status" class="notice" role="status"></p><button id="campaign-refresh">Atualizar resultados</button></section>
  <section class="panel spaced" id="clients-panel" hidden>
   <h2>Clientes</h2>
   <form id="real-lookup" class="form-grid"><label>Código do cliente<input name="code" required maxlength="64" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label><button>Consultar código</button></form>

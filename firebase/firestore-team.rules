@@ -62,6 +62,14 @@ service cloud.firestore {
    allow create, update: if admin() && validClient(code);
    allow delete: if false;
   }
+  match /routeDays/{id} {
+   allow read: if admin() || (active() && resource.data.owner==request.auth.uid) || (supervisor() && resource.data.supervisorId==request.auth.uid);
+   allow write: if false;
+  }
+  match /conquests/{id} {
+   allow read: if admin() || (active() && resource.data.owner==request.auth.uid) || (supervisor() && resource.data.supervisorId==request.auth.uid);
+   allow write: if false;
+  }
   match /{document=**} {allow read, write: if false;}
  }
 }

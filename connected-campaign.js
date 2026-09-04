@@ -1,0 +1,7 @@
+import {routeScore} from './domain.js';
+const $=s=>document.querySelector(s);
+export function attachCampaign(getSession){let profile=null,busy=false;
+ async function load(){if(!profile||busy)return;busy=true;$('#campaign-status').textContent='Atualizando dados da campanha…';try{const month=$('#campaign-month').value,{routes,conquests}=await getSession().campaign.dashboard(month),valid=routes.reduce((s,r)=>s+(Number(r.valid)||0),0),planned=routes.reduce((s,r)=>s+(Number(r.planned)||0),0),score=routeScore(valid,planned),approved=conquests.filter(c=>Number.isFinite(c.grade)),points=approved.reduce((s,c)=>s+c.grade,0);$('#campaign-route').textContent=score.percent===null?'—':`${score.percent.toFixed(1)}%`;$('#campaign-stores').textContent=`${valid} de ${planned} lojas`;$('#campaign-conquests').textContent=String(conquests.length);$('#campaign-points').textContent=String(Math.round(points*10)/10);$('#campaign-status').textContent=routes.length||conquests.length?'Dados reais carregados do Firebase.':'Nenhum roteiro ou conquista registrado neste mês.';}catch{$('#campaign-status').textContent='Não foi possível carregar o painel. As regras desta etapa podem ainda não estar publicadas.';}finally{busy=false;}}
+ $('#campaign-refresh').addEventListener('click',load);$('#campaign-month').addEventListener('change',load);
+ return {isBusy:()=>busy,setState(state){profile=state.status==='ready'?state.profile:null;$('#campaign-panel').hidden=!profile;if(profile)load();}};
+}

@@ -2,6 +2,7 @@ import {firebaseConfig} from './firebase-config.js';
 import {createSessionController} from './session-controller.js';
 import {createClientRepository} from './firestore-clients.js';
 import {createTeamRepository} from './team-data.js';
+import {createCampaignRepository} from './campaign-data.js';
 
 export async function startSession(onState) {
  const [apps,authSdk,store,functionsSdk]=await Promise.all([
@@ -29,6 +30,7 @@ export async function startSession(onState) {
  return {
   clients:createClientRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   team:createTeamRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
+  campaign:createCampaignRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   importTeam:(jobId,rows)=>functionsSdk.httpsCallable(functions,'importTeam')({jobId,rows}),
   login:(email,password)=>authSdk.signInWithEmailAndPassword(auth,email,password),
   requestPassword:email=>authSdk.sendPasswordResetEmail(auth,email),
