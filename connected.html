@@ -34,5 +34,26 @@
   </div>
   <p id="clients-status" class="notice" role="status" aria-live="polite"></p>
  </section>
+ <section id="team-panel" class="panel spaced" hidden>
+  <h2>Equipe e supervisores</h2>
+  <div id="team-create" hidden>
+   <p>Primeiro crie a conta em Firebase Authentication. Copie o UID e confira o e-mail antes de cadastrar o perfil abaixo. Este formulário não cria contas nem define senhas e ainda não verifica se o UID existe no Authentication.</p>
+   <form id="team-form" class="form-grid">
+    <label>UID da conta no Authentication<input name="uid" required maxlength="128" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label>
+    <label>Nome<input name="name" required maxlength="100"></label>
+    <label>E-mail da conta<input name="email" type="email" required maxlength="254"></label>
+    <label>Perfil<select name="role"><option value="supervisor">Supervisor</option><option value="promoter">Promotor</option></select></label>
+    <label>Código do promotor no roteiro<input name="sourceId" maxlength="40" pattern="[0-9]+"></label>
+    <label>UID do supervisor responsável<input name="supervisorId" maxlength="128" pattern="[A-Za-z0-9_-]+"></label>
+    <label class="check full"><input type="checkbox" required>Conferi o UID e o e-mail no Authentication. Autorizo este perfil de acesso.</label>
+    <button class="primary">Cadastrar perfil no Firebase</button>
+   </form>
+   <p class="muted">Cadastre os supervisores antes dos promotores. Perfis e códigos existentes não serão sobrescritos. Alterações e desativação ainda devem ser feitas pelo administrador no console, com cuidado para preservar os vínculos.</p>
+  </div>
+  <p>Administrador: todos os cadastros. Supervisor: apenas os promotores vinculados. Até 25 registros por consulta.</p>
+  <button id="team-first">Carregar equipe</button> <button id="team-next" disabled>Próxima página</button>
+  <div class="table-wrap"><table><thead><tr><th>Nome</th><th>UID</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th>Código roteiro</th><th>Supervisor (UID)</th></tr></thead><tbody id="team-rows"></tbody></table></div>
+  <p id="team-status" class="notice" role="status" aria-live="polite"></p>
+ </section>
  <p><a href="firebase.html">Diagnóstico da configuração Firebase</a></p>
 </main></body></html>

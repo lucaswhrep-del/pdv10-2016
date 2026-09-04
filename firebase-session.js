@@ -1,6 +1,7 @@
 import {firebaseConfig} from './firebase-config.js';
 import {createSessionController} from './session-controller.js';
 import {createClientRepository} from './firestore-clients.js';
+import {createTeamRepository} from './team-data.js';
 
 export async function startSession(onState) {
  const [apps,authSdk,store]=await Promise.all([
@@ -25,6 +26,7 @@ export async function startSession(onState) {
  const unsubscribe=authSdk.onAuthStateChanged(auth,user=>controller.accept(user));
  return {
   clients:createClientRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
+  team:createTeamRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   login:(email,password)=>authSdk.signInWithEmailAndPassword(auth,email,password),
   logout:()=>controller.logout(),
   refresh:()=>controller.accept(auth.currentUser),

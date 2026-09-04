@@ -1,0 +1,27 @@
+import {teamRecord,teamError} from './team-data.js';
+const $=s=>document.querySelector(s);
+export function attachTeam(getSession){
+ let profile=null,revision=0,busy=false,cursor=null,more=false;
+ const form=$('#team-form'),status=$('#team-status');
+ function lock(value){busy=value;for(const button of $('#team-panel').querySelectorAll('button'))button.disabled=value;$('#team-next').disabled=value||!more;}
+ function roleChanged(){const promoter=form.elements.role.value==='promoter';for(const field of ['sourceId','supervisorId']){form.elements[field].required=promoter;form.elements[field].disabled=!promoter;}}
+ form.elements.role.addEventListener('change',roleChanged);roleChanged();
+ async function load(next=false){
+  if(busy||!profile)return;const current=revision;lock(true);
+  try{const result=await getSession().team.page(next?cursor:null);if(current!==revision)return;cursor=result.cursor;more=result.more;$('#team-rows').replaceChildren();
+   for(const row of result.rows){const tr=document.createElement('tr');for(const value of [row.name||row.uid,row.uid,row.email,{admin:'Administrador',supervisor:'Supervisor',promoter:'Promotor'}[row.role]||'Inválido',row.active?'Ativo':'Inativo',row.sourceId,row.supervisorId]){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('#team-rows').append(tr);}
+   status.textContent=result.rows.length?`${result.rows.length} cadastros nesta página.`:'Nenhum cadastro nesta página.';
+  }catch(error){if(current===revision)status.textContent=teamError(error);}finally{lock(false);}
+ }
+ $('#team-first').addEventListener('click',()=>load());$('#team-next').addEventListener('click',()=>load(true));
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||profile?.role!=='admin')return;const current=revision;lock(true);
+  try{let data;try{data=teamRecord(Object.fromEntries(new FormData(form)));}catch(error){throw {safeMessage:error.message};}
+   await getSession().team.create(data);if(current!==revision)return;form.reset();roleChanged();status.textContent='Perfil salvo. A conta do Authentication não foi alterada. Confira a listagem e teste o login dessa conta.';
+  }catch(error){if(current===revision)status.textContent=teamError(error);}finally{lock(false);}
+ });
+ return {isBusy:()=>busy,setState(state){
+  if(state.status!=='ready'||profile?.uid!==state.profile.uid){revision++;cursor=null;more=false;$('#team-rows').replaceChildren();form.reset();roleChanged();status.textContent='';}
+  profile=state.status==='ready'?state.profile:null;$('#team-panel').hidden=!['admin','supervisor'].includes(profile?.role);$('#team-create').hidden=profile?.role!=='admin';
+ }};
+}

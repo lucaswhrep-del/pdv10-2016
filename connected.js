@@ -1,14 +1,17 @@
 import {startSession} from './firebase-session.js';
 import {connectionError} from './firebase-access.js';
 import {attachClients} from './connected-clients.js';
+import {attachTeam} from './connected-team.js';
 const $=selector=>document.querySelector(selector);
 const form=$('#login-form'),status=$('#session-status');
 let session,pending=false;
 const clientView=attachClients(()=>session);
+const teamView=attachTeam(()=>session);
 const roles={admin:'Administrador',supervisor:'Supervisor',promoter:'Promotor'};
 const scopes={admin:'Perfil administrativo identificado.',supervisor:'Perfil de supervisor identificado. As avaliações serão restritas aos seus promotores.',promoter:'Perfil de promotor identificado com vínculo de supervisor cadastrado.'};
 function render(state){
  clientView.setState(state);
+ teamView.setState(state);
  const ready=state.status==='ready',out=state.status==='signed-out';
  $('#profile-panel').hidden=!ready;
  $('#login-panel').hidden=!out;
@@ -29,6 +32,6 @@ form.addEventListener('submit',async event=>{
 $('#logout').addEventListener('click',()=>session?.logout());
 $('#refresh-profile').addEventListener('click',()=>session?.refresh());
 // Recheck on foreground return; no polling or realtime database listeners.
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!pending&&!clientView.isBusy())session?.refresh();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!pending&&!clientView.isBusy()&&!teamView.isBusy())session?.refresh();});
 try {session=await startSession(render);$('#login-button').disabled=false;}
 catch(error){status.textContent=connectionError(error);}

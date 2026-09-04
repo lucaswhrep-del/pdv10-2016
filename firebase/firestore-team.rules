@@ -1,0 +1,67 @@
+// Etapa Equipe + Clientes. Publicar somente após testes. Storage permanece bloqueado.
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function active() {
+   return request.auth != null
+    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true
+    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin','supervisor','promoter']
+    && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role != 'promoter'
+     || (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.supervisorId is string
+      && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.supervisorId.size() > 0));
+  }
+  function admin() {return active() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';}
+  function supervisor() {return active() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'supervisor';}
+  function text(v) {return v is string && v.size() <= 250;}
+  function validClient(code) {
+   let d=request.resource.data;
+   return d.keys().hasAll(['code','name','city','district','street','updatedBy','updatedAt'])
+    && d.keys().hasOnly(['code','name','city','district','street','updatedBy','updatedAt'])
+    && code.matches('^[A-Za-z0-9_-]{1,64}$') && d.code == code
+    && text(d.name) && d.name.size()>0 && text(d.city) && text(d.district) && text(d.street)
+    && d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+  }
+  function validTeam(uid) {
+   let d=request.resource.data;
+   return uid.matches('^[A-Za-z0-9_-]{1,128}$') && uid != request.auth.uid
+    && d.keys().hasAll(['name','email','role','sourceId','supervisorId','active','createdBy','createdAt','updatedBy','updatedAt'])
+    && d.keys().hasOnly(['name','email','role','sourceId','supervisorId','active','createdBy','createdAt','updatedBy','updatedAt'])
+    && d.name is string && d.name.size()>0 && d.name.size()<=100
+    && d.email is string && d.email.size()>3 && d.email.size()<=254
+    && d.active == true && d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid
+    && d.createdAt == request.time && d.updatedAt == request.time
+    && ((d.role=='supervisor' && d.sourceId=='' && d.supervisorId=='')
+     || (d.role=='promoter' && d.sourceId is string && d.sourceId.matches('^[0-9]{1,40}$')
+      && d.supervisorId is string && d.supervisorId!=uid
+      && get(/databases/$(database)/documents/users/$(d.supervisorId)).data.role=='supervisor'
+      && get(/databases/$(database)/documents/users/$(d.supervisorId)).data.active==true
+      && !exists(/databases/$(database)/documents/routeCodes/$(d.sourceId))
+      && getAfter(/databases/$(database)/documents/routeCodes/$(d.sourceId)).data.owner==uid));
+  }
+  match /users/{uid} {
+   allow get: if (request.auth != null && request.auth.uid==uid) || admin()
+    || (supervisor() && resource.data.supervisorId==request.auth.uid);
+   allow list: if request.query.limit != null && request.query.limit<=25
+    && (admin() || (supervisor() && resource.data.supervisorId==request.auth.uid));
+   allow create: if admin() && validTeam(uid);
+   allow update, delete: if false;
+  }
+  match /routeCodes/{code} {
+   allow get: if admin();
+   allow create: if admin() && code.matches('^[0-9]{1,40}$')
+    && request.resource.data.keys().hasAll(['owner']) && request.resource.data.keys().hasOnly(['owner'])
+    && request.resource.data.owner is string
+    && !exists(/databases/$(database)/documents/users/$(request.resource.data.owner))
+    && getAfter(/databases/$(database)/documents/users/$(request.resource.data.owner)).data.sourceId==code
+    && getAfter(/databases/$(database)/documents/users/$(request.resource.data.owner)).data.role=='promoter';
+   allow list, update, delete: if false;
+  }
+  match /clients/{code} {
+   allow get: if active();
+   allow list: if admin() && request.query.limit != null && request.query.limit<=25;
+   allow create, update: if admin() && validClient(code);
+   allow delete: if false;
+  }
+  match /{document=**} {allow read, write: if false;}
+ }
+}

@@ -49,6 +49,18 @@ Após publicar, testar primeiro com uma planilha fictícia pequena, recarregar a
 
 ## Próximos incrementos necessários
 
+### Equipe — incremento implementado
+
+Validação local: 43 testes unitários e 14 testes de regras/integração passaram. A nova suíte verifica cadastro real no emulador, atomicidade de código/perfil, bloqueio de duplicatas, isolamento entre supervisores e rejeição de vínculos inválidos mesmo ignorando as validações da interface. Sem testes visuais de navegador ou criação de contas reais nesta etapa.
+
+Na área conectada, administradores podem cadastrar novos perfis de supervisor e promotor usando o UID de uma conta já criada em Authentication. A conferência de UID e e-mail é manual: Firestore não consulta o diretório de Authentication. Não há formulário de senha ou cadastro público. Contas administrativas continuam provisionadas pelo console.
+
+`firebase/firestore-team.rules` substitui a política de Clientes e preserva as mesmas permissões da base. Adiciona criação de perfis por administradores, leitura administrativa paginada e leitura de vinculados pelo supervisor. O código do roteiro fica reservado em `routeCodes/{codigo}` na mesma operação atômica do perfil, impedindo duplicatas e reservas sem cadastro. Perfis existentes e reservas não podem ser alterados ou excluídos por esta versão.
+
+Publicação: colar o arquivo completo `firebase/firestore-team.rules` na aba Regras do Firestore. Alternativa autenticada: `npx firebase deploy --only firestore:rules --project pdv-10---2026 --config firebase.team.json`. Não publicar `firebase.clients.json` após esta etapa, pois retiraria o acesso da equipe. Storage permanece bloqueado.
+
+Teste manual após publicação: criar duas contas de teste em Authentication; cadastrar primeiro o supervisor pelo UID e depois o promotor vinculado, com código numérico ainda não utilizado. Sair e entrar como supervisor: carregar equipe deve mostrar somente o promotor vinculado. Como promotor, os controles de equipe não aparecem. Nunca compartilhar senhas no chat. A gestão automática de contas e alteração/desativação auditada ainda dependem do backend.
+
 1. Modelo de dados e testes de regras nos emuladores, incluindo vínculos de supervisão e perfis inativos.
 2. Backend autenticado para operações privilegiadas, notas, etapas de fotos e fechamento; limites de recursos e prevenção de repetição.
 3. Persistência paginada de clientes, roteiros e conquistas, sem carregar toda a base em cada login.

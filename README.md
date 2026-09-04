@@ -2,7 +2,9 @@
 
 ## Integração atual
 
-`connected.html` oferece login real e módulo de clientes (importação confirmada, consulta exata e paginação administrativa). A demonstração principal permanece separada. 40 testes unitários e seis testes de regras/integração com Firestore Emulator passaram. As regras da etapa Clientes ainda precisam ser publicadas pelo administrador; instruções e limitações em `firebase/INTEGRATION.md`. Roteiros, equipe, conquistas, fotos e premiação ainda não estão conectados ao backend. Não liberar para operação da campanha.
+Etapa Equipe: administrador cadastra perfis de supervisores e promotores para UIDs previamente criados no Authentication. Promotor exige supervisor ativo e código de roteiro exclusivo, com gravação atômica. Supervisor consulta apenas os vinculados. Publicar `firebase/firestore-team.rules` (inclui Clientes) somente após conferir `firebase/INTEGRATION.md`. Não cria contas, senhas ou administradores, não edita cadastros existentes e não valida a existência do UID no Authentication. Roteiros e conquistas ainda estão pendentes.
+
+`connected.html` oferece login real, clientes e cadastro de perfis da equipe. A demonstração principal permanece separada. 43 testes unitários e 14 testes de regras/integração com Firestore Emulator passaram. O usuário confirmou a publicação das regras de Clientes e a persistência de registros fictícios. As regras da etapa Equipe ainda precisam ser publicadas; instruções em `firebase/INTEGRATION.md`. Roteiros, conquistas, fotos e premiação ainda não estão conectados ao backend. Não liberar para operação da campanha.
 
 ## Estado para versionamento — 04/09/2026
 
