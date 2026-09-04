@@ -70,6 +70,14 @@ service cloud.firestore {
    allow read: if admin() || (active() && resource.data.owner==request.auth.uid) || (supervisor() && resource.data.supervisorId==request.auth.uid);
    allow write: if false;
   }
+  match /nominations/{id} {
+   allow read: if admin() || (active() && resource.data.owner==request.auth.uid) || (supervisor() && resource.data.supervisorId==request.auth.uid);
+   allow write: if false;
+  }
+  match /winners/{month} {
+   allow read: if active();
+   allow write: if false;
+  }
   match /{document=**} {allow read, write: if false;}
  }
 }

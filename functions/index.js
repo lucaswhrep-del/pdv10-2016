@@ -4,7 +4,7 @@ const {getAuth}=require('firebase-admin/auth');
 const {getFirestore,FieldValue}=require('firebase-admin/firestore');
 const {createHash}=require('node:crypto');
 const {validateRequest}=require('./import-core');
-initializeApp();
+initializeApp({storageBucket:'pdv-10---2026.firebasestorage.app'});
 
 const db=getFirestore(),auth=getAuth();
 const key=email=>createHash('sha256').update(email).digest('hex');
@@ -56,3 +56,4 @@ exports.importTeam=onCall({region:'southamerica-east1',memory:'512MiB',timeoutSe
  }
  return {results};
 });
+Object.assign(exports,require('./campaign'));

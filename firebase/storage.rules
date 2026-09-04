@@ -1,8 +1,13 @@
-// Modelo inicial: nenhuma foto deve ser enviada até o backend estar pronto.
-// Não substituir regras existentes sem revisão pelo administrador do projeto.
 rules_version = '2';
 service firebase.storage {
  match /b/{bucket}/o {
-  match /{allPaths=**} { allow read, write: if false; }
+  function active(){return request.auth!=null && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.active==true;}
+  function role(){return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;}
+  match /conquests/{uid}/{conquestId}/{stage} {
+   allow create: if active() && request.auth.uid==uid && stage in ['before','execution','persistence'] && resource==null && request.resource.size<=205*1024 && request.resource.contentType.matches('image/.*');
+   allow read: if active() && (request.auth.uid==uid || role()=='admin' || (role()=='supervisor' && firestore.get(/databases/(default)/documents/conquests/$(conquestId)).data.supervisorId==request.auth.uid));
+   allow update, delete: if false;
+  }
+  match /{allPaths=**}{allow read,write:if false;}
  }
 }
