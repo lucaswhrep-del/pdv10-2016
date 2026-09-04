@@ -1,10 +1,19 @@
 <!doctype html>
 <html lang="pt-BR">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css"><script type="module" src="connected.js"></script></head>
-<body><main>
- <div class="heading"><div><h1>PDV Nota 10</h1><p>Acesso à campanha · Outubro a dezembro de 2026</p></div><a href="/demo.html">Visualizar demonstração</a></div>
+<body class="connected-app">
+<header class="portal-header">
+ <div class="portal-header-inner">
+  <div class="portal-logos"><img src="assets/grupo-wh.jpeg" alt="Grupo WH Representações"><span></span><img src="assets/itambe.png" alt="Itambé"></div>
+  <div class="portal-title"><span class="eyebrow">CAMPANHA DE INCENTIVO 2026</span><strong>PDV Nota 10</strong><small>Outubro a dezembro · Reconhecimento individual</small></div>
+  <div class="portal-live"><i></i> Ambiente conectado</div>
+ </div>
+</header>
+<nav class="portal-nav" aria-label="Navegação principal"><a href="#profile-panel">Meu acesso</a><a href="#clients-panel">Clientes</a><a href="#team-panel">Equipe</a><a href="/demo.html">Visão da campanha</a></nav>
+<main class="portal-main">
+ <div class="heading portal-heading"><div><span class="eyebrow">PAINEL DE GESTÃO</span><h1>Bem-vindo ao PDV Nota 10</h1><p>Gerencie os dados da campanha com acesso seguro e individual.</p></div></div>
  <section class="panel spaced" id="login-panel">
-  <h2>Entrar</h2><p>Use o e-mail e a senha cadastrados para você no Firebase Authentication.</p>
+  <h2>Entrar</h2><p>Use o seu e-mail e a senha cadastrada.</p>
   <form id="login-form" class="form-grid">
    <label>E-mail<input name="email" type="email" autocomplete="username" maxlength="254" required></label>
    <label>Senha<input name="password" type="password" autocomplete="current-password" required></label>
@@ -17,7 +26,7 @@
  <section class="panel spaced" id="profile-panel" hidden>
   <h2>Seu acesso</h2><p id="profile-name"></p><p id="profile-role"></p>
   <p id="profile-scope"></p>
-  <p class="muted">Nenhum dado demonstrativo foi importado para sua conta. As permissões do Firestore controlam o acesso aos clientes.</p>
+  <p class="muted">Acesso validado. Os módulos exibidos abaixo respeitam o seu perfil e os vínculos cadastrados.</p>
  </section>
  <div id="session-actions" hidden><button id="refresh-profile">Conferir perfil novamente</button> <button id="logout">Sair</button></div>
  <section class="panel spaced" id="clients-panel" hidden>
@@ -56,5 +65,5 @@
   <div class="table-wrap"><table><thead><tr><th>Nome</th><th>UID</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th>Código roteiro</th><th>Supervisor (UID)</th></tr></thead><tbody id="team-rows"></tbody></table></div>
   <p id="team-status" class="notice" role="status" aria-live="polite"></p>
  </section>
- <p><a href="firebase.html">Diagnóstico da configuração Firebase</a></p>
+ <p class="portal-support"><a href="firebase.html">Diagnóstico técnico</a></p>
 </main></body></html>
