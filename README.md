@@ -4,7 +4,7 @@
 
 Etapa Equipe: além do cadastro manual por UID, o administrador importa até 500 supervisores e promotores por planilha. A função protegida cria as contas no Authentication sem senha, grava perfis e vínculos e reserva códigos de roteiro. O arquivo é processado em lotes de 50, com retomada idempotente. Cada usuário usa “Primeiro acesso” para receber o e-mail do Firebase e definir a própria senha. A função nunca cria administradores. Publicar `firebase/firestore-team.rules` e `importTeam` somente após conferir `firebase/INTEGRATION.md`.
 
-`connected.html` oferece login real, clientes, primeiro acesso e cadastro individual ou em massa da equipe. A demonstração principal permanece separada. 49 testes unitários e 14 testes de regras/integração com Firestore Emulator passaram. O usuário confirmou a publicação das regras de Clientes e a persistência de registros fictícios. As regras da etapa Equipe e a função ainda precisam ser publicadas; instruções em `firebase/INTEGRATION.md`. Roteiros, conquistas, fotos e premiação ainda não estão conectados ao backend. Não liberar para operação da campanha.
+Na publicação, `/` oferece o login real, clientes, primeiro acesso e cadastro individual ou em massa da equipe; `/demo.html` mantém a demonstração separada. 49 testes unitários e 14 testes de regras/integração com Firestore Emulator passaram. As regras da etapa Equipe e a função `importTeam` estão publicadas no projeto `pdv-10---2026`. Roteiros, conquistas, fotos e premiação ainda não estão conectados ao backend.
 
 ## Estado para versionamento — 04/09/2026
 
