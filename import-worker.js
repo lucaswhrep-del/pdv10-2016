@@ -1,0 +1,2 @@
+import {read,utils} from './vendor/xlsx.mjs';
+self.onmessage=e=>{try{const book=read(e.data,{type:'array',raw:true,cellDates:false,sheetRows:20002});const name=book.SheetNames[0];if(!name)throw new Error('Planilha vazia.');const matrix=utils.sheet_to_json(book.Sheets[name],{header:1,raw:false,defval:''});if(matrix.length>20001)throw new Error('Limite de 20 mil clientes por importação.');self.postMessage({name,sheets:book.SheetNames.length,matrix});}catch(error){self.postMessage({error:error.message});}};

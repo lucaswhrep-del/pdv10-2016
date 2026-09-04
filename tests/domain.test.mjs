@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeScore,canCapture,SIX_DAYS,parseGrade,canNominate} from '../domain.js';
+test('rota: limite sem arredondamento',()=>{assert.equal(routeScore(90,100).points,90);assert.equal(routeScore(8999,10000).points,0);assert.equal(routeScore(100,100).points,100);assert.equal(routeScore(0,0).points,null);assert.throws(()=>routeScore(101,100));});
+test('permanência exige 144 horas e não permite substituir foto',()=>{const at='2026-10-01T12:00:00Z';const c={photos:{before:{at},execution:{at}}};assert.equal(canCapture(c,'persistence',Date.parse(at)+SIX_DAYS-1),false);assert.equal(canCapture(c,'persistence',Date.parse(at)+SIX_DAYS),true);c.photos.persistence={at};assert.equal(canCapture(c,'persistence',Date.parse(at)+SIX_DAYS),false);});
+test('execução exige antes',()=>{assert.equal(canCapture({photos:{}},'execution',Date.now()),false);assert.equal(canCapture({photos:{}},'before',Date.now()),true);});
+test('nota e indicação exigem conclusão e avaliação',()=>{assert.equal(parseGrade(0),0);assert.equal(parseGrade('10'),10);assert.throws(()=>parseGrade(''));assert.throws(()=>parseGrade(11));const c={month:'2026-10',grade:null,photos:{before:{},execution:{},persistence:{}}};assert.equal(canNominate(c,'2026-10'),false);c.grade=0;assert.equal(canNominate(c,'2026-10'),true);assert.equal(canNominate(c,'2026-11'),false);});

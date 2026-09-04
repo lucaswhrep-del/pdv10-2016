@@ -1,0 +1,8 @@
+// Modelo inicial: nenhuma foto deve ser enviada até o backend estar pronto.
+// Não substituir regras existentes sem revisão pelo administrador do projeto.
+rules_version = '2';
+service firebase.storage {
+ match /b/{bucket}/o {
+  match /{allPaths=**} { allow read, write: if false; }
+ }
+}
