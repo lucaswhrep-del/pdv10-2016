@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import core from '../functions/import-core.js';
+test('normaliza supervisor',()=>assert.deepEqual(core.normalizeRow({name:' Ana ',email:'ANA@EXEMPLO.COM',role:'supervisor'}),{name:'Ana',email:'ana@exemplo.com',role:'supervisor',sourceId:'',supervisorEmail:''}));
+test('valida lote e promotor',()=>{const result=core.validateRequest({jobId:'12345678-1234-1234-1234-123456789abc',rows:[{name:'Bia',email:'bia@exemplo.com',role:'promoter',sourceId:'007',supervisorEmail:'SUP@EXEMPLO.COM'}]});assert.equal(result.rows[0].supervisorEmail,'sup@exemplo.com');});
+test('rejeita lote acima de 50',()=>assert.throws(()=>core.validateRequest({jobId:'12345678-1234-1234-1234-123456789abc',rows:Array(51).fill({name:'A',email:'a@b.com',role:'supervisor'})}),/1 a 50/));

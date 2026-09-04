@@ -3,7 +3,7 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css"><script type="module" src="connected.js"></script></head>
 <body><main>
  <div class="heading"><div><h1>PDV Nota 10</h1><p>Acesso à campanha · Outubro a dezembro de 2026</p></div><a href="/">Demonstração separada</a></div>
- <p class="notice">Integração em desenvolvimento. Clientes usam o Firestore real após a aplicação das regras desta etapa. Roteiros, avaliações e fotos ainda não estão conectados. Não importe a base real antes da validação das regras.</p>
+ <p class="notice">Integração em desenvolvimento. Clientes e equipe usam o Firebase real após a publicação das regras e da função protegida. Roteiros, avaliações e fotos ainda não estão conectados. Não importe a base real antes da validação desta etapa.</p>
  <section class="panel spaced" id="login-panel">
   <h2>Entrar</h2><p>Use o e-mail e a senha cadastrados para você no Firebase Authentication.</p>
   <form id="login-form" class="form-grid">
@@ -50,7 +50,7 @@
     <button class="primary">Cadastrar perfil no Firebase</button>
    </form>
    <p class="muted">Cadastre os supervisores antes dos promotores. Perfis e códigos existentes não serão sobrescritos. Alterações e desativação ainda devem ser feitas pelo administrador no console, com cuidado para preservar os vínculos.</p>
-   <h3>Cadastro e vinculação por planilha</h3><p>Formato: Nome, Email, Perfil, Codigo roteiro e Email supervisor. Supervisores precisam estar na mesma planilha ou já cadastrados. Limite de 500 usuários.</p><form id="team-import-form" class="form-grid"><label>Planilha da equipe<input name="file" type="file" accept=".xlsx,.csv" required></label><button>Ler e validar planilha</button></form><p id="team-import-preview" class="notice"></p><button id="team-import-confirm" class="primary" disabled>Confirmar criação das contas e vínculos</button>
+   <h3>Cadastro e vinculação por planilha</h3><p>Formato: Nome, Email, Perfil, Codigo roteiro e Email supervisor. Supervisores precisam estar na mesma planilha ou já cadastrados. Limite de 500 usuários. As contas serão criadas sem senha e cada usuário definirá a sua pelo Primeiro acesso.</p><form id="team-import-form" class="form-grid"><label>Planilha da equipe<input name="file" type="file" accept=".xlsx,.csv" required></label><button>Ler e validar planilha</button></form><p id="team-import-preview" class="notice"></p><button id="team-import-confirm" class="primary" disabled>Confirmar criação das contas e vínculos</button>
   </div>
   <p>Administrador: todos os cadastros. Supervisor: apenas os promotores vinculados. Até 25 registros por consulta.</p>
   <button id="team-first">Carregar equipe</button> <button id="team-next" disabled>Próxima página</button>

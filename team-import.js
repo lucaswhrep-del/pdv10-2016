@@ -19,8 +19,6 @@ export function parseTeamRows(matrix){
   }else{row.sourceId='';row.supervisorEmail='';}
   rows.push(row);
  });
- const supervisors=new Set(rows.filter(r=>r.role==='supervisor').map(r=>r.email));
- for(const [i,row] of rows.entries())if(row.role==='promoter'&&!supervisors.has(row.supervisorEmail))errors.push(`Linha ${i+2}: o supervisor ${row.supervisorEmail||'não informado'} precisa constar antes na mesma planilha ou já estar cadastrado.`);
  if(!rows.length)errors.push('Nenhum cadastro encontrado.');if(rows.length>500)errors.push('Limite de 500 usuários por planilha.');
  return {rows,errors};
 }

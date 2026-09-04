@@ -71,3 +71,17 @@ Teste manual após publicação: criar duas contas de teste em Authentication; c
 Ainda não houve implantação de backend, alteração de regras remotas, importação de clientes de produção nem ativação da campanha. O login de administrador foi confirmado pelo usuário; os testes dos demais perfis aqui descritos usam identidades fictícias no emulador.
 
 Referência: https://firebase.google.com/docs/auth/web/auth-state-persistence
+# Publicação da equipe em massa
+
+O arquivo `firebase.backend.json` reúne a função `importTeam` e as regras atuais de Equipe + Clientes. A função aceita somente uma sessão cujo documento `users/{uid}` esteja ativo e tenha `role: "admin"`. Ela cria apenas `supervisor` e `promoter`; não recebe senha e não cria administradores.
+
+Antes de usar a planilha real, publique a etapa autenticando a CLI na conta que administra `pdv-10---2026`:
+
+```powershell
+npx firebase login
+npx firebase deploy --project pdv-10---2026 --config firebase.backend.json --only functions,firestore:rules
+```
+
+Depois, faça um teste com um supervisor e um promotor fictícios. As contas são criadas sem senha. Cada pessoa deve abrir a aplicação, escolher “Primeiro acesso”, informar o e-mail cadastrado e usar o link enviado pelo Firebase para definir sua própria senha.
+
+Não reutilize um e-mail que já tenha outro perfil, nem um código de roteiro existente. Uma tentativa interrompida pode ser retomada pelo botão da mesma tela; as linhas concluídas são reconhecidas pela importação e não são recriadas.
