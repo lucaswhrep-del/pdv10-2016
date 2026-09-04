@@ -20,8 +20,14 @@ export function attachTeam(getSession){
    await getSession().team.create(data);if(current!==revision)return;form.reset();roleChanged();status.textContent='Perfil salvo. A conta do Authentication não foi alterada. Confira a listagem e teste o login dessa conta.';
   }catch(error){if(current===revision)status.textContent=teamError(error);}finally{lock(false);}
  });
+ $('#team-import-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||profile?.role!=='admin')return;lock(true);const output=$('#team-import-preview');
+  try{const {readClients}=await import('./importers.js'),{parseTeamRows}=await import('./team-import.js');const sheet=await readClients(event.target.elements.file.files[0]),result=parseTeamRows(sheet.matrix);
+   output.textContent=result.errors.length?`Corrija antes de importar:\n${result.errors.slice(0,12).join('\n')}`:`${result.rows.length} usuários válidos: ${result.rows.filter(r=>r.role==='supervisor').length} supervisores e ${result.rows.filter(r=>r.role==='promoter').length} promotores. Nenhum dado foi enviado. O envio será liberado junto com o backend de criação de contas e convites.`;
+  }catch(error){output.textContent=error.message||'Não foi possível ler a planilha.';}finally{lock(false);$('#team-import-confirm').disabled=true;}
+ });
  return {isBusy:()=>busy,setState(state){
-  if(state.status!=='ready'||profile?.uid!==state.profile.uid){revision++;cursor=null;more=false;$('#team-rows').replaceChildren();form.reset();roleChanged();status.textContent='';}
+  if(state.status!=='ready'||profile?.uid!==state.profile.uid){revision++;cursor=null;more=false;$('#team-rows').replaceChildren();form.reset();$('#team-import-form').reset();$('#team-import-preview').textContent='';roleChanged();status.textContent='';}
   profile=state.status==='ready'?state.profile:null;$('#team-panel').hidden=!['admin','supervisor'].includes(profile?.role);$('#team-create').hidden=profile?.role!=='admin';
  }};
 }

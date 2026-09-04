@@ -4,4 +4,5 @@ for(const name of ['index.html','app.js','domain.js','styles.css','import-utils.
 for(const dir of ['assets','vendor']) await cp(dir,`dist/${dir}`,{recursive:true});
 for(const name of ['client-data.js','firestore-clients.js','connected-clients.js'])await copyFile(name,`dist/${name}`);
 for(const name of ['team-data.js','connected-team.js'])await copyFile(name,`dist/${name}`);
+await copyFile('team-import.js','dist/team-import.js');
 console.log('Versão demonstrativa gerada em dist.');

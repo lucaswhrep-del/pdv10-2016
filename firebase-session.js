@@ -28,6 +28,7 @@ export async function startSession(onState) {
   clients:createClientRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   team:createTeamRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   login:(email,password)=>authSdk.signInWithEmailAndPassword(auth,email,password),
+  requestPassword:email=>authSdk.sendPasswordResetEmail(auth,email),
   logout:()=>controller.logout(),
   refresh:()=>controller.accept(auth.currentUser),
   dispose(){unsubscribe();controller.dispose();}

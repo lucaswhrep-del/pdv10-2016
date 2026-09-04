@@ -31,6 +31,7 @@ form.addEventListener('submit',async event=>{
 });
 $('#logout').addEventListener('click',()=>session?.logout());
 $('#refresh-profile').addEventListener('click',()=>session?.refresh());
+$('#first-access-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.target.querySelector('button'),out=$('#first-access-status');button.disabled=true;try{await session.requestPassword(event.target.elements.email.value.trim());out.textContent='Se o e-mail estiver cadastrado, você receberá um link para definir sua senha. Confira também o spam.';}catch(error){out.textContent=connectionError(error);}finally{button.disabled=false;}});
 // Recheck on foreground return; no polling or realtime database listeners.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!pending&&!clientView.isBusy()&&!teamView.isBusy())session?.refresh();});
 try {session=await startSession(render);$('#login-button').disabled=false;}
