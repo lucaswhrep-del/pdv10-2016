@@ -71,7 +71,8 @@ service cloud.firestore {
    allow write: if false;
   }
   match /nominations/{id} {
-   allow read: if admin() || (active() && resource.data.owner==request.auth.uid) || (supervisor() && resource.data.supervisorId==request.auth.uid);
+   allow get: if active() && (admin() || id.matches('^2026-(10|11|12)_' + request.auth.uid + '$') || resource.data.owner==request.auth.uid || (supervisor() && resource.data.supervisorId==request.auth.uid));
+   allow list: if admin() || (supervisor() && resource.data.supervisorId==request.auth.uid);
    allow write: if false;
   }
   match /winners/{month} {

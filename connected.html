@@ -29,7 +29,11 @@
   <p class="muted">Acesso validado. Os módulos exibidos abaixo respeitam o seu perfil e os vínculos cadastrados.</p>
  </section>
  <div id="session-actions" hidden><button id="refresh-profile">Conferir perfil novamente</button> <button id="logout">Sair</button></div>
- <section class="panel spaced" id="campaign-panel" hidden><div class="panel-head"><div><span class="eyebrow">RESULTADOS REAIS</span><h2>Painel da campanha</h2></div><label>Mês<select id="campaign-month"><option value="2026-10">Outubro</option><option value="2026-11">Novembro</option><option value="2026-12">Dezembro</option></select></label></div><div class="summary-grid"><div><span>Rota cumprida</span><b id="campaign-route">—</b><small id="campaign-stores"></small></div><div><span>Conquistas registradas</span><b id="campaign-conquests">0</b></div><div><span>Pontos em conquistas</span><b id="campaign-points">0</b></div></div><p id="campaign-status" class="notice" role="status"></p><button id="campaign-refresh">Atualizar resultados</button></section>
+ <section class="panel spaced" id="campaign-panel" hidden><div class="panel-head"><div><span class="eyebrow">RESULTADOS REAIS</span><h2>Painel da campanha</h2></div><label>Mês<select id="campaign-month"><option value="2026-10">Outubro</option><option value="2026-11">Novembro</option><option value="2026-12">Dezembro</option></select></label></div><div class="summary-grid"><div><span>Rota cumprida</span><b id="campaign-route">—</b><small id="campaign-stores"></small></div><div><span>Conquistas registradas</span><b id="campaign-conquests">0</b></div><div><span>Pontos em conquistas</span><b id="campaign-points">0</b></div></div><p id="campaign-status" class="notice" role="status"></p><button id="campaign-refresh">Atualizar resultados</button>
+  <div id="route-admin" class="spaced" hidden><h3>Importar cumprimento de rota</h3><p class="muted">PDF diário do sistema de check-in e check-out. O arquivo é processado no aparelho e não é armazenado.</p><form id="route-form" class="form-grid"><label>Relatório PDF<input name="file" type="file" accept="application/pdf,.pdf" required></label><button>Ler e conferir</button></form><p id="route-preview" class="notice"></p><button id="route-confirm" class="primary" disabled>Confirmar importação da rota</button></div>
+  <div id="conquest-create" class="spaced" hidden><h3>Nova conquista</h3><form id="conquest-form" class="form-grid"><label>Código do cliente<input name="clientCode" required maxlength="64"></label><label>Título da conquista<input name="title" required maxlength="100"></label><button class="primary">Criar conquista</button></form></div>
+  <div id="campaign-role-actions" class="spaced"></div>
+ </section>
  <section class="panel spaced" id="clients-panel" hidden>
   <h2>Clientes</h2>
   <form id="real-lookup" class="form-grid"><label>Código do cliente<input name="code" required maxlength="64" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label><button>Consultar código</button></form>
@@ -67,4 +71,4 @@
   <p id="team-status" class="notice" role="status" aria-live="polite"></p>
  </section>
  <p class="portal-support"><a href="firebase.html">Diagnóstico técnico</a></p>
-</main></body></html>
+ </main><dialog id="camera-dialog"><form method="dialog" class="dialog-head"><h2 id="camera-title">Registrar evidência</h2><button aria-label="Fechar câmera">✕</button></form><video id="camera-video" autoplay muted playsinline></video><p class="muted">A foto será comprimida para reduzir o uso de armazenamento. Data e confirmação são registradas pelo servidor.</p><button id="camera-snap" class="primary" disabled>Capturar e confirmar</button></dialog></body></html>
