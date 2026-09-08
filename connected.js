@@ -16,13 +16,14 @@ function render(state){
  teamView.setState(state);
  campaignView.setState(state);
  const ready=state.status==='ready',out=state.status==='signed-out';
+ document.body.classList.toggle('auth-screen',!ready);
  $('#profile-panel').hidden=!ready;
  $('#login-panel').hidden=!out;
  $('#session-actions').hidden=!['ready','blocked'].includes(state.status);
  $('#profile-name').textContent=ready?(state.profile.name||state.profile.email):'';
  $('#profile-role').textContent=ready?roles[state.profile.role]:'';
  $('#profile-scope').textContent=ready?scopes[state.profile.role]:'';
- status.textContent=state.message||({checking:'Conferindo seu perfil…',ready:'Login e perfil confirmados. Integração da campanha ainda em desenvolvimento.','signed-out':'Informe seus dados para entrar.','signing-out':'Encerrando sessão…'}[state.status]);
+ status.textContent=state.message||({checking:'Conferindo seu perfil…',ready:'Login e perfil confirmados. Ambiente conectado e pronto para uso.','signed-out':'Informe seus dados para entrar.','signing-out':'Encerrando sessão…'}[state.status]);
 }
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(pending||!session)return;
