@@ -50,6 +50,18 @@ test('clientes continuam acessíveis ao admin e pontuação permanece bloqueada'
  await assertSucceeds(store.setDoc(store.doc(db('a'),'clients','001'),{code:'001',name:'Fictício',city:'',district:'',street:'',updatedBy:'a',updatedAt:store.serverTimestamp()}));
  await assertFails(store.setDoc(store.doc(db('a'),'conquests','c1'),{grade:10}));
 });
+test('campanha real respeita o dono e o supervisor e bloqueia escrita direta',async()=>{
+ await env.withSecurityRulesDisabled(async ctx=>{const raw=ctx.firestore();await Promise.all([
+  store.setDoc(store.doc(raw,'routeDays','2026-10-01_p1'),{owner:'p1',supervisorId:'s1',month:'2026-10',date:'2026-10-01',valid:9,planned:10}),
+  store.setDoc(store.doc(raw,'conquests','c1'),{owner:'p1',supervisorId:'s1',month:'2026-10',grade:null}),
+  store.setDoc(store.doc(raw,'campaignConfig','2026-10'),{month:'2026-10',prizes:{first:100,second:50,third:25}})
+ ]);});
+ for(const uid of ['a','s1','p1']){await assertSucceeds(store.getDoc(store.doc(db(uid),'routeDays','2026-10-01_p1')));await assertSucceeds(store.getDoc(store.doc(db(uid),'conquests','c1')));await assertSucceeds(store.getDoc(store.doc(db(uid),'campaignConfig','2026-10')));}
+ await assertFails(store.getDoc(store.doc(db('s2'),'routeDays','2026-10-01_p1')));
+ await assertFails(store.getDoc(store.doc(db('p3'),'conquests','c1')));
+ await assertFails(store.setDoc(store.doc(db('a'),'routeDays','direto'),{owner:'p1'}));
+ await assertFails(store.updateDoc(store.doc(db('s1'),'conquests','c1'),{grade:10}));
+});
 test('regras recusam supervisor inválido mesmo ignorando validação do aplicativo',async()=>{
  for(const supervisorId of ['missing','off','a','p1']){
   const uid='invalid-'+supervisorId,code='99'+['missing','off','a','p1'].indexOf(supervisorId);

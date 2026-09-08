@@ -79,6 +79,10 @@ service cloud.firestore {
    allow read: if active();
    allow write: if false;
   }
+  match /campaignConfig/{month} {
+   allow read: if active();
+   allow write: if false;
+  }
   match /{document=**} {allow read, write: if false;}
  }
 }
