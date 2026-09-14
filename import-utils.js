@@ -45,8 +45,19 @@ export function parseRouteLines(lines){
  for(const p of promoters){if(p.reported===null)p.errors.push('Resumo de visitas não encontrado.');else if(p.reported!==p.valid)p.errors.push(`Resumo informa ${p.reported} visitas, mas foram reconhecidas ${p.valid}.`);if(!p.planned)warnings.push(`${p.name}: sem rota programada.`);}
  return {date,month:date.slice(0,7),team,promoters,warnings};
 }
+export async function matchRegisteredRoutePromoters(report,resolveRoute){
+ const rows=[],skipped=[];
+ for(const p of report.promoters){
+  const user=await resolveRoute(p.sourceId);
+  if(!user){skipped.push({sourceId:p.sourceId,name:p.name,reason:'Promotor sem cadastro ou vínculo de roteiro.'});continue;}
+  if(p.errors.length)throw new Error(`${p.name}: ${p.errors[0]}`);
+  rows.push({owner:user.owner,sourceId:p.sourceId,date:report.date,team:report.team,valid:p.valid,planned:p.planned});
+ }
+ if(!rows.length)throw new Error('Nenhum promotor cadastrado foi encontrado neste relatório.');
+ return {rows,skipped};
+}
 export function prepareRouteImport(report,choices,users,routes,imports){
- if(!report||!['2026-10','2026-11','2026-12'].includes(report.month))throw new Error('Data fora da campanha.');
+ if(!report||!['2026-09','2026-10','2026-11','2026-12'].includes(report.month))throw new Error('Data fora da campanha ou dos testes de setembro.');
  if(imports.some(i=>i.date===report.date&&i.team===report.team))throw new Error('Essa equipe e data já foram importadas.');
  const selected=[],excluded=[],seen=new Set();
  report.promoters.forEach((p,i)=>{const c=choices[i];if(!c)throw new Error('Conferência incompleta.');if(!c.include){if(!c.reason?.trim())throw new Error(`Informe o motivo para excluir ${p.name}.`);excluded.push({sourceId:p.sourceId,reason:c.reason.trim()});return;}
