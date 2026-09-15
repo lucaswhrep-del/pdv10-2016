@@ -38,7 +38,7 @@ export async function startSession(onState) {
   campaignActions:{
    importRoutes:rows=>call('importRoutes')({rows}),
    createConquest:data=>call('createConquest')(data),
-   async uploadEvidence({conquestId,stage,blob}){const uid=auth.currentUser?.uid;if(!uid)throw Error('Sessão inválida.');await storageSdk.uploadBytes(storageSdk.ref(storage,`conquests/${uid}/${conquestId}/${stage}`),blob,{contentType:blob.type,customMetadata:{stage}});return call('confirmEvidence')({conquestId,stage});},
+   async uploadEvidence({conquestId,stage,blob}){if(!auth.currentUser)throw Error('Sessão inválida.');const bytes=new Uint8Array(await blob.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));return call('uploadEvidence')({conquestId,stage,contentType:blob.type,base64:btoa(binary)});},
    photoUrl:path=>storageSdk.getDownloadURL(storageSdk.ref(storage,path)),
    review:data=>call('reviewConquest')(data),nominate:conquestId=>call('nominateConquest')({conquestId}),chooseWinner:data=>call('chooseWinner')(data),configurePrizes:data=>call('configurePrizes')(data)
   },
