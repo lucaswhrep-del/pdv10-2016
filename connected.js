@@ -1,8 +1,8 @@
 import {startSession} from './firebase-session.js?v=20260915-4';
 import {connectionError} from './firebase-access.js';
-import {attachClients} from './connected-clients.js';
+import {attachClients} from './connected-clients.js?v=20260915-5';
 import {attachTeam} from './connected-team.js';
-import {attachCampaign} from './connected-campaign.js?v=20260915-4';
+import {attachCampaign} from './connected-campaign.js?v=20260915-5';
 const $=selector=>document.querySelector(selector);
 const form=$('#login-form'),status=$('#session-status');
 let session,pending=false,currentProfile=null;
@@ -16,7 +16,7 @@ const pageLinks={
  'profile-panel':'#nav-profile','campaign-panel':'#nav-campaign','clients-panel':'#nav-clients','team-panel':'#nav-team'
 };
 function showPage(profile){
- const allowed=profile.role==='promoter'?pageIds.slice(0,3):pageIds;
+ const allowed=profile.role==='admin'?pageIds:profile.role==='supervisor'?['profile-panel','campaign-panel','team-panel']:['profile-panel','campaign-panel'];
  let id=location.hash.slice(1)||'profile-panel';
  if(!allowed.includes(id))id='profile-panel';
  for(const pageId of pageIds)$('#'+pageId)?.classList.toggle('page-inactive',pageId!==id);
@@ -35,6 +35,7 @@ function personalize(profile){
  }[profile.role];
  $('#portal-eyebrow').textContent=copy.eyebrow;$('#portal-heading-title').textContent=copy.title;$('#portal-heading-description').textContent=copy.description;
  $('#nav-campaign').textContent=copy.nav;$('#nav-team').textContent=profile.role==='supervisor'?'Minha equipe':'Equipe';
+ $('#nav-clients').textContent='Base de clientes';$('#profile-client-shortcut').hidden=profile.role!=='admin';
  $('#profile-primary-title').textContent=copy.action;$('#profile-primary-description').textContent=copy.detail;
  const actions=$('#campaign-role-actions'),create=$('#conquest-create');
  if(profile.role==='promoter')actions.before(create);else $('#campaign-refresh').after(actions);

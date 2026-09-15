@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20260915-4"><script type="module" src="connected.js?v=20260915-4"></script></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20260915-5"><script type="module" src="connected.js?v=20260915-5"></script></head>
 <body class="connected-app auth-screen">
 <header class="portal-header">
  <div class="portal-header-inner">
@@ -27,7 +27,7 @@
  <p id="session-status" class="notice spaced" role="status" aria-live="polite">Preparando acesso…</p>
  <section class="panel spaced profile-home" id="profile-panel" hidden>
   <div class="profile-overview"><div><span class="eyebrow">SEU PAINEL</span><h2 id="profile-name"></h2><p id="profile-scope"></p></div><span id="profile-role" class="profile-role"></span></div>
-  <div class="profile-shortcuts"><a id="profile-primary" class="profile-shortcut primary-shortcut" href="#campaign-panel"><b id="profile-primary-title">Abrir campanha</b><span id="profile-primary-description">Acompanhe os resultados do mês.</span></a><a class="profile-shortcut" href="#clients-panel"><b>Consultar cliente</b><span>Localize razão social e endereço pelo código.</span></a></div>
+  <div class="profile-shortcuts"><a id="profile-primary" class="profile-shortcut primary-shortcut" href="#campaign-panel"><b id="profile-primary-title">Abrir campanha</b><span id="profile-primary-description">Acompanhe os resultados do mês.</span></a><a id="profile-client-shortcut" class="profile-shortcut" href="#clients-panel"><b>Gerenciar base de clientes</b><span>Importe e confira os clientes cadastrados.</span></a></div>
  </section>
  <div id="session-actions" hidden><button id="refresh-profile">Conferir perfil novamente</button> <button id="logout">Sair</button></div>
  <section class="panel spaced" id="campaign-panel" hidden><div class="panel-head"><div><span class="eyebrow">RESULTADOS REAIS</span><h2>Painel da campanha</h2></div><label>Mês<select id="campaign-month"><option value="2026-09">Setembro (testes)</option><option value="2026-10">Outubro</option><option value="2026-11">Novembro</option><option value="2026-12">Dezembro</option></select></label></div><div class="summary-grid"><div><span>Rota cumprida</span><b id="campaign-route">—</b><small id="campaign-stores"></small></div><div><span>Conquistas registradas</span><b id="campaign-conquests">0</b></div><div><span>Pontos em conquistas</span><b id="campaign-points">0</b></div><div><span>Pontuação total</span><b id="campaign-total">0</b><small id="campaign-eligibility">Mínimo: 150 pontos</small></div></div><p id="campaign-status" class="notice" role="status"></p><button id="campaign-refresh">Atualizar resultados</button>
@@ -40,9 +40,9 @@
   <p id="prize-summary" class="muted"></p>
  </section>
  <section class="panel spaced" id="clients-panel" hidden>
-  <h2>Clientes</h2>
-  <form id="real-lookup" class="form-grid"><label>Código do cliente<input name="code" required maxlength="64" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label><button>Consultar código</button></form>
-  <p id="lookup-result" class="client-result" aria-live="polite"></p>
+  <h2>Base de clientes</h2>
+  <form id="real-lookup" class="form-grid" hidden><label>Código do cliente<input name="code" required maxlength="64" pattern="[A-Za-z0-9_-]+" autocomplete="off"></label><button>Consultar código</button></form>
+  <p id="lookup-result" class="client-result" aria-live="polite" hidden></p>
   <div id="client-admin" hidden>
    <h3>Importar base de clientes</h3><p>Planilha XLSX ou CSV de até 5 MB. Colunas reconhecidas: Cliente ou Código, Nome 1 ou Razão social, Cidade, Bairro, Rua e número opcional. A primeira aba será utilizada. CNPJ e CEP não são enviados.</p>
    <form id="real-clients-form" class="form-grid"><label>Planilha<input type="file" name="file" accept=".xlsx,.csv" required></label><button>Ler e conferir</button></form>

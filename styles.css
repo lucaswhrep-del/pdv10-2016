@@ -36,3 +36,22 @@
 .auth-screen .portal-nav,.auth-screen .portal-heading,.auth-screen .portal-live{display:none}.auth-screen .portal-header-inner{grid-template-columns:auto 1fr;max-width:1080px}.auth-screen .portal-main{max-width:1080px;padding-top:52px}.auth-screen #session-status{max-width:510px;margin:18px 0 0 auto}.login-card{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);padding:0!important;overflow:hidden;min-height:510px;border:0!important;box-shadow:0 24px 70px #122d4020!important}.login-intro{position:relative;display:flex;flex-direction:column;justify-content:center;padding:54px;color:white;background:linear-gradient(145deg,#102d42,#164b5d 58%,#087e70)}.login-intro:after{content:"10";position:absolute;right:-8px;bottom:-58px;font-size:230px;font-weight:900;line-height:1;color:#ffffff0b;letter-spacing:-18px}.login-intro>*{position:relative;z-index:1}.login-intro .eyebrow{color:#bce9bc;margin-bottom:18px}.login-intro h2{font-size:36px;line-height:1.15;letter-spacing:-1.2px;margin-bottom:18px}.login-intro p{max-width:520px;color:#d7e6eb;margin:0}.login-highlights{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px}.login-highlights span{display:grid;gap:2px;min-width:145px;padding:13px 16px;border:1px solid #ffffff30;border-radius:10px;background:#ffffff12;font-size:12px;color:#d7e6eb}.login-highlights b{font-size:22px;color:white}.login-access{display:flex;flex-direction:column;justify-content:center;padding:50px;background:white}.login-access>.eyebrow{color:var(--green);margin-bottom:10px}.login-access>h2{font-size:26px;margin-bottom:5px}.login-access>p{margin-top:0}.login-form{display:grid;gap:16px;margin-top:17px}.login-form button{width:100%;margin-top:4px}.login-form input{padding:13px 14px}.first-access{margin-top:24px;padding-top:19px;border-top:1px solid var(--line)}.first-access summary{cursor:pointer;color:var(--green);font-size:14px;font-weight:700}.login-help{font-size:12px;color:#78909e;margin:22px 0 0;line-height:1.5}
 @media(max-width:760px){.auth-screen .portal-header-inner{grid-template-columns:1fr}.auth-screen .portal-title{grid-column:1;grid-row:auto}.auth-screen .portal-main{padding-top:24px}.login-card{grid-template-columns:1fr}.login-intro{padding:32px;min-height:280px}.login-intro h2{font-size:28px}.login-intro:after{font-size:170px}.login-access{padding:32px}.auth-screen #session-status{margin-left:0}}
 @media(max-width:420px){.login-intro{padding:26px}.login-access{padding:26px}.login-highlights span{min-width:0;flex:1}.login-intro h2{font-size:25px}}
+
+/* Leitura rápida das conquistas por status */
+.connected-app .role-actions:not(:empty){padding:0;border:0;background:transparent}
+.connected-app .role-actions>h3:first-child{font-size:21px;margin-top:28px}
+.connected-app .campaign-item{position:relative;margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:22px;background:#fff;box-shadow:0 7px 22px #122d4009;transition:border-color .15s ease,box-shadow .15s ease}
+.connected-app .campaign-item:hover{border-color:#b7d4d0;box-shadow:0 10px 28px #122d4010}
+.connected-app .campaign-item h3{margin:13px 0 8px}
+.connected-app .campaign-item .task{padding:14px 0}
+.conquest-toolbar{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:22px 0 5px;padding:15px 18px;border:1px solid #d6e5e2;border-radius:12px;background:#f5faf8}
+.conquest-toolbar label{width:min(260px,100%);font-weight:650;color:var(--navy)}
+.conquest-toolbar select{background:#fff}
+.conquest-count{align-self:center;font-size:14px;color:#506979}
+.status-chip{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:6px 10px;font-size:12px;font-weight:750}
+.status-chip:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status-incomplete{color:#8a6011;background:#fff2d8}
+.status-review,.status-ready{color:#176783;background:#e5f4fa}
+.status-graded{color:#087166;background:#e4f5ef}
+.status-nominated{color:#fff;background:linear-gradient(135deg,#087e70,#164b5d)}
+@media(max-width:650px){.conquest-toolbar{display:grid;align-items:stretch}.conquest-toolbar label{width:100%}.connected-app .campaign-item{padding:18px}.connected-app .campaign-item .task{align-items:flex-start;flex-direction:column}.connected-app .campaign-item .evidence-buttons{margin-bottom:0}}
