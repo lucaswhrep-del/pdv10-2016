@@ -39,7 +39,7 @@ export async function startSession(onState) {
    importRoutes:rows=>call('importRoutes')({rows}),
    createConquest:data=>call('createConquest')(data),
    async uploadEvidence({conquestId,stage,blob}){if(!auth.currentUser)throw Error('Sessão inválida.');const bytes=new Uint8Array(await blob.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));return call('uploadEvidence')({conquestId,stage,contentType:blob.type,base64:btoa(binary)});},
-   photoUrl:path=>storageSdk.getDownloadURL(storageSdk.ref(storage,path)),
+   evidence:async(conquestId,stage)=>(await call('getEvidence')({conquestId,stage})).data,
    review:data=>call('reviewConquest')(data),nominate:conquestId=>call('nominateConquest')({conquestId}),chooseWinner:data=>call('chooseWinner')(data),configurePrizes:data=>call('configurePrizes')(data)
   },
   login:(email,password)=>authSdk.signInWithEmailAndPassword(auth,email,password),
