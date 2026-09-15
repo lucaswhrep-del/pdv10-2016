@@ -55,3 +55,12 @@
 .status-graded{color:#087166;background:#e4f5ef}
 .status-nominated{color:#fff;background:linear-gradient(135deg,#087e70,#164b5d)}
 @media(max-width:650px){.conquest-toolbar{display:grid;align-items:stretch}.conquest-toolbar label{width:100%}.connected-app .campaign-item{padding:18px}.connected-app .campaign-item .task{align-items:flex-start;flex-direction:column}.connected-app .campaign-item .evidence-buttons{margin-bottom:0}}
+
+.campaign-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 24px;padding:6px;border:1px solid #d6e3e8;border-radius:13px;background:#f2f6f7}
+.campaign-tabs button{border:0;background:transparent;color:#5a7180;padding:12px 14px}
+.campaign-tabs button:hover{border:0;background:#e5efef}
+.campaign-tabs button.active{background:#fff;color:var(--green);box-shadow:0 3px 12px #122d4014}
+.conquest-toolbar{display:grid;grid-template-columns:auto minmax(210px,1fr) minmax(190px,260px);align-items:end}
+.conquest-toolbar .conquest-count{white-space:nowrap;padding-bottom:11px}
+.filter-empty{margin-top:14px}
+@media(max-width:720px){.campaign-tabs{grid-template-columns:1fr}.campaign-tabs button{text-align:left}.conquest-toolbar{grid-template-columns:1fr}.conquest-toolbar .conquest-count{padding-bottom:0}}
