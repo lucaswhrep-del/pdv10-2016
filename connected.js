@@ -36,6 +36,8 @@ function personalize(profile){
  $('#portal-eyebrow').textContent=copy.eyebrow;$('#portal-heading-title').textContent=copy.title;$('#portal-heading-description').textContent=copy.description;
  $('#nav-campaign').textContent=copy.nav;$('#nav-team').textContent=profile.role==='supervisor'?'Minha equipe':'Equipe';
  $('#profile-primary-title').textContent=copy.action;$('#profile-primary-description').textContent=copy.detail;
+ const actions=$('#campaign-role-actions'),create=$('#conquest-create');
+ if(profile.role==='promoter')actions.before(create);else $('#campaign-refresh').after(actions);
 }
 function render(state){
  clientView.setState(state);
