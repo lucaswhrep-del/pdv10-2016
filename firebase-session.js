@@ -17,6 +17,7 @@ export async function startSession(onState) {
  const db=store.getFirestore(app);
  const functions=functionsSdk.getFunctions(app,'southamerica-east1');
  const storage=storageSdk.getStorage(app),call=name=>functionsSdk.httpsCallable(functions,name);
+ const campaign=createCampaignRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile});
  let acceptedProfile=null;
  const controller=createSessionController({
   readProfile:async uid=>{
@@ -32,7 +33,7 @@ export async function startSession(onState) {
  return {
   clients:createClientRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
   team:createTeamRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
-  campaign:createCampaignRepository({store,db,identity:()=>auth.currentUser,profile:()=>acceptedProfile}),
+  campaign:{...campaign,dashboard:async month=>(await call('getCampaignDashboard')({month})).data},
   importTeam:(jobId,rows)=>functionsSdk.httpsCallable(functions,'importTeam')({jobId,rows}),
   campaignActions:{
    importRoutes:rows=>call('importRoutes')({rows}),
