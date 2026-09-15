@@ -1,8 +1,8 @@
-import {startSession} from './firebase-session.js?v=20260915-3';
+import {startSession} from './firebase-session.js?v=20260915-4';
 import {connectionError} from './firebase-access.js';
 import {attachClients} from './connected-clients.js';
 import {attachTeam} from './connected-team.js';
-import {attachCampaign} from './connected-campaign.js?v=20260915-3';
+import {attachCampaign} from './connected-campaign.js?v=20260915-4';
 const $=selector=>document.querySelector(selector);
 const form=$('#login-form'),status=$('#session-status');
 let session,pending=false,currentProfile=null;
