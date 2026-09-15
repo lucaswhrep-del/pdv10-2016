@@ -1,4 +1,4 @@
-import {routeScore,canCapture} from './domain.js';import {compressCapture} from './photo.js';
+import {routeScore,canCapture} from './domain.js';import {compressCapture} from './photo.js?v=20260915-2';
 const $=s=>document.querySelector(s),stages={before:'Antes',execution:'Execução',persistence:'Após 6 dias'};
 export function attachCampaign(getSession){let profile=null,busy=false,data={routes:[],conquests:[],nominations:[],winner:null,config:null,names:{}},routeRows=null,target=null,stream=null;const status=$('#campaign-status');
  function lock(v){busy=v;for(const b of $('#campaign-panel').querySelectorAll('button')){if(v){b.dataset.lockDisabled=String(b.disabled);b.disabled=true;}else if('lockDisabled'in b.dataset){b.disabled=b.dataset.lockDisabled==='true';delete b.dataset.lockDisabled;}}}
