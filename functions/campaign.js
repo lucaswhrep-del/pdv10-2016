@@ -6,7 +6,7 @@ const db=getFirestore(),auth=getAuth(),bucket=getStorage().bucket();
 const MONTHS=new Set(['2026-09','2026-10','2026-11','2026-12']),STAGES=['before','execution','persistence'],SIX_DAYS=6*24*60*60*1000;
 const RANKING_PRIZES=[800,500,400,300,300,300,200,200,150,150,150,150],CONQUEST_PRIZES=[200,200],MINIMUM_PRIZE_POINTS=150;
 const clean=(v,n=250)=>{const s=String(v??'').trim();if(!s||s.length>n)throw new HttpsError('invalid-argument','Campo obrigatório inválido.');return s;};
-async function actor(request,roles){if(!request.auth)throw new HttpsError('unauthenticated','Faça login novamente.');const snap=await db.doc(`users/${request.auth.uid}`).get(),p=snap.data();if(!snap.exists||p.active!==true||!roles.includes(p.role))throw new HttpsError('permission-denied','Operação não autorizada.');return {uid:request.auth.uid,...p};}
+async function actor(request,roles){if(!request.auth)throw new HttpsError('unauthenticated','Faça login novamente.');const snap=await db.doc(`users/${request.auth.uid}`).get(),p=snap.data();if(!snap.exists||p.active!==true||!roles.includes(p.role))throw new HttpsError('permission-denied','Operação não autorizada.');return {...p,uid:request.auth.uid};}
 const callable=(handler,options={})=>onCall({region:'southamerica-east1',memory:'512MiB',timeoutSeconds:120,maxInstances:3,...options},handler);
 
 const importRoutes=callable(async request=>{const admin=await actor(request,['admin']),rows=request.data?.rows;if(!Array.isArray(rows)||!rows.length||rows.length>100)throw new HttpsError('invalid-argument','Envie de 1 a 100 registros.');const batch=db.batch(),seen=new Set();
