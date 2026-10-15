@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20261015-1"><script type="module" src="connected.js?v=20261015-1"></script></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20261015-2"><script type="module" src="connected.js?v=20261015-2"></script></head>
 <body class="connected-app auth-screen">
 <header class="portal-header">
  <div class="portal-header-inner">
@@ -21,7 +21,7 @@
     <button class="primary" id="login-button" disabled>Entrar</button>
     <button type="button" id="show-first-access" class="access-link">É meu primeiro acesso</button>
    </form>
-   <div id="first-access" class="first-access" hidden><ol class="access-steps"><li>Informe o e-mail já cadastrado pela administração.</li><li>Abra o link recebido no e-mail.</li><li>Crie sua senha e volte para entrar no aplicativo.</li></ol><form id="first-access-form" class="login-form"><label>E-mail cadastrado<input name="email" type="email" autocomplete="email" placeholder="seuemail@empresa.com" required maxlength="254"></label><button type="submit" class="primary">Enviar link para criar minha senha</button><button type="button" id="back-to-login" class="access-link">Voltar para o login</button></form><p id="first-access-status" class="access-feedback" role="status" aria-live="polite"></p></div>
+   <div id="first-access" class="first-access" hidden><ol class="access-steps"><li>Informe o e-mail e o código do promotor já cadastrados.</li><li>Crie uma senha com pelo menos 8 caracteres.</li><li>Depois entre normalmente no aplicativo.</li></ol><form id="first-access-form" class="login-form"><label>E-mail cadastrado<input name="email" type="email" autocomplete="email" placeholder="seuemail@empresa.com" required maxlength="254"></label><label>Código do promotor no roteiro<input name="sourceId" inputmode="numeric" autocomplete="off" required maxlength="40" pattern="[0-9]+" placeholder="Ex.: 1234"></label><label>Crie sua senha<input name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="Mínimo de 8 caracteres"></label><label>Confirme sua senha<input name="confirmation" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="Digite a senha novamente"></label><button type="submit" class="primary">Criar minha senha</button><button type="button" id="back-to-login" class="access-link">Voltar para o login</button></form><p id="first-access-status" class="access-feedback" role="status" aria-live="polite"></p></div>
    <p class="login-help">Não há cadastro público. Em um aparelho compartilhado, encerre a sessão ao terminar.</p>
   </div>
  </section>
@@ -69,7 +69,7 @@
     <button class="primary">Cadastrar perfil no Firebase</button>
    </form>
    <p class="muted">Cadastre os supervisores antes dos promotores. Perfis e códigos existentes não serão sobrescritos. Alterações e desativação ainda devem ser feitas pelo administrador no console, com cuidado para preservar os vínculos.</p>
-   <h3>Cadastro e vinculação por planilha</h3><p>Formato: Nome, Email, Perfil, Codigo roteiro e Email supervisor. Supervisores precisam estar na mesma planilha ou já cadastrados. Limite de 500 usuários. As contas serão criadas sem senha e cada usuário definirá a sua pelo Primeiro acesso.</p><form id="team-import-form" class="form-grid"><label>Planilha da equipe<input name="file" type="file" accept=".xlsx,.csv" required></label><button>Ler e validar planilha</button></form><p id="team-import-preview" class="notice"></p><button id="team-import-confirm" class="primary" disabled>Confirmar criação das contas e vínculos</button>
+   <h3>Cadastro e vinculação por planilha</h3><p>Formato: Nome, Email, Perfil, Codigo roteiro e Email supervisor. Supervisores precisam estar na mesma planilha ou já cadastrados. Limite de 500 usuários. As contas dos promotores serão criadas sem senha; no Primeiro acesso, cada promotor confirma seu código de roteiro e cria a própria senha diretamente no app.</p><form id="team-import-form" class="form-grid"><label>Planilha da equipe<input name="file" type="file" accept=".xlsx,.csv" required></label><button>Ler e validar planilha</button></form><p id="team-import-preview" class="notice"></p><button id="team-import-confirm" class="primary" disabled>Confirmar criação das contas e vínculos</button>
   </div>
   <p>Administrador: todos os cadastros. Supervisor: apenas os promotores vinculados. Até 25 registros por consulta.</p>
   <button id="team-first">Carregar equipe</button> <button id="team-next" disabled>Próxima página</button>

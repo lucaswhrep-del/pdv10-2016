@@ -17,6 +17,10 @@ export function connectionError(error){
   'auth/too-many-requests':'Muitas tentativas. Aguarde antes de tentar novamente.',
   'auth/unauthorized-domain':'Autorize o domínio deste app nas configurações do Authentication.',
   'auth/invalid-api-key':'Confira a configuração Web e as restrições da chave no projeto Firebase.',
+  'functions/invalid-argument':'Confira o e-mail, o código do promotor e a senha de no mínimo 8 caracteres.',
+  'functions/failed-precondition':'Não foi possível confirmar o primeiro acesso. Confira os dados com seu supervisor ou use o acesso normal se já criou sua senha.',
+  'functions/unavailable':'Serviço temporariamente indisponível. Tente novamente em alguns instantes.',
+  'functions/internal':'Não foi possível criar a senha. Tente novamente.',
   'permission-denied':'Login aceito, mas a leitura do perfil foi negada. Confira as regras de users/{UID}.',
   'unavailable':'Firestore indisponível. Confira se o banco foi criado e tente novamente.',
   'failed-precondition':'Confira a criação e configuração do banco Firestore padrão.'

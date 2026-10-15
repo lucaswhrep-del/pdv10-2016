@@ -56,4 +56,25 @@ exports.importTeam=onCall({region:'southamerica-east1',memory:'512MiB',timeoutSe
  }
  return {results};
 });
+exports.completeFirstAccess=onCall({region:'southamerica-east1',memory:'256MiB',timeoutSeconds:30,maxInstances:2},async request=>{
+ if(request.auth)throw new HttpsError('failed-precondition','Encerre a sessão antes de realizar o primeiro acesso.');
+ const email=String(request.data?.email||'').trim().toLowerCase(),sourceId=String(request.data?.sourceId||'').trim(),password=String(request.data?.password||'');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||!/^\d{1,40}$/.test(sourceId)||password.length<8||password.length>72)throw new HttpsError('invalid-argument','Confira o e-mail, o código do promotor e a senha de no mínimo 8 caracteres.');
+ const denied=()=>new HttpsError('failed-precondition','Não foi possível confirmar o primeiro acesso. Confira o e-mail e o código do promotor com seu supervisor.');
+ let user;
+ try{user=await auth.getUserByEmail(email);}catch(error){if(error.code==='auth/user-not-found')throw denied();throw new HttpsError('unavailable','Não foi possível validar o cadastro agora.');}
+ const profileRef=db.doc(`users/${user.uid}`),claimRef=db.doc(`firstAccessClaims/${user.uid}`);
+ try{
+  await db.runTransaction(async tx=>{
+   const [profileSnap,claimSnap]=await Promise.all([tx.get(profileRef),tx.get(claimRef)]),profile=profileSnap.data();
+   if(!profileSnap.exists||profile.active!==true||profile.role!=='promoter'||profile.email!==email||profile.sourceId!==sourceId||profile.passwordInitializedAt||claimSnap.exists)throw denied();
+   tx.create(claimRef,{emailHash:key(email),createdAt:FieldValue.serverTimestamp()});
+  });
+ }catch(error){if(error instanceof HttpsError)throw error;throw denied();}
+ try{
+  await auth.updateUser(user.uid,{password});
+  await profileRef.update({passwordInitializedAt:FieldValue.serverTimestamp()});
+  return {ok:true};
+ }catch(error){try{await claimRef.delete();}catch{}throw new HttpsError('internal','Não foi possível criar a senha. Tente novamente.');}
+});
 Object.assign(exports,require('./campaign'));

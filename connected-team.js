@@ -24,7 +24,7 @@ export function attachTeam(getSession){
   event.preventDefault();if(busy||profile?.role!=='admin')return;lock(true);const output=$('#team-import-preview');
   try{const {readClients}=await import('./importers.js'),{parseTeamRows}=await import('./team-import.js');const sheet=await readClients(event.target.elements.file.files[0]),result=parseTeamRows(sheet.matrix);
    pendingRows=result.errors.length?null:[...result.rows.filter(r=>r.role==='supervisor'),...result.rows.filter(r=>r.role==='promoter')];pendingJobId=pendingRows?crypto.randomUUID():null;
-   output.textContent=result.errors.length?`Corrija antes de importar:\n${result.errors.slice(0,12).join('\n')}`:`${result.rows.length} usuários válidos: ${result.rows.filter(r=>r.role==='supervisor').length} supervisores e ${result.rows.filter(r=>r.role==='promoter').length} promotores. As contas serão criadas sem senha; cada usuário definirá a sua em Primeiro acesso.`;
+   output.textContent=result.errors.length?`Corrija antes de importar:\n${result.errors.slice(0,12).join('\n')}`:`${result.rows.length} usuários válidos: ${result.rows.filter(r=>r.role==='supervisor').length} supervisores e ${result.rows.filter(r=>r.role==='promoter').length} promotores. Os promotores criarão a própria senha no app usando e-mail e código do roteiro.`;
   }catch(error){pendingRows=null;pendingJobId=null;output.textContent=error.message||'Não foi possível ler a planilha.';}finally{lock(false);$('#team-import-confirm').disabled=!pendingRows;}
  });
  $('#team-import-confirm').addEventListener('click',async()=>{
@@ -32,7 +32,7 @@ export function attachTeam(getSession){
   try{
    for(let start=0;start<pendingRows.length;start+=50){output.textContent=`Enviando ${Math.min(start+50,pendingRows.length)} de ${pendingRows.length} cadastros…`;const response=await getSession().importTeam(pendingJobId,pendingRows.slice(start,start+50));all.push(...response.data.results);}
    const errors=all.filter(item=>item.status==='error'),created=all.filter(item=>item.status==='created').length,existing=all.length-created-errors.length;
-   output.textContent=errors.length?`${created} contas criadas, ${existing} já existentes e ${errors.length} com erro:\n${errors.slice(0,12).map(item=>`${item.email}: ${item.message}`).join('\n')}\nCorrija os dados e confira a equipe antes de tentar novamente.`:`Importação concluída: ${created} contas criadas e ${existing} já existentes. Oriente os usuários a usar Primeiro acesso para receber o link e cadastrar a própria senha.`;
+   output.textContent=errors.length?`${created} contas criadas, ${existing} já existentes e ${errors.length} com erro:\n${errors.slice(0,12).map(item=>`${item.email}: ${item.message}`).join('\n')}\nCorrija os dados e confira a equipe antes de tentar novamente.`:`Importação concluída: ${created} contas criadas e ${existing} já existentes. Oriente os promotores a usar Primeiro acesso com o e-mail e o código do roteiro para criar a senha diretamente no app.`;
    if(!errors.length){pendingRows=null;pendingJobId=null;$('#team-import-confirm').disabled=true;$('#team-import-form').reset();await load();}
   }catch(error){output.textContent=error?.message||'A conexão foi interrompida. O mesmo lote poderá ser retomado sem duplicar contas.';}finally{lock(false);$('#team-import-confirm').disabled=!pendingRows;}
  });

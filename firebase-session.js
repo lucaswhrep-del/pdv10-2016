@@ -43,6 +43,7 @@ export async function startSession(onState) {
    review:data=>call('reviewConquest')(data),nominate:conquestId=>call('nominateConquest')({conquestId}),chooseWinner:data=>call('chooseWinner')(data),configurePrizes:data=>call('configurePrizes')(data)
   },
   login:(email,password)=>authSdk.signInWithEmailAndPassword(auth,email,password),
+  firstAccess:data=>call('completeFirstAccess')(data),
   requestPassword:email=>authSdk.sendPasswordResetEmail(auth,email),
   logout:()=>controller.logout(),
   refresh:()=>controller.accept(auth.currentUser),
