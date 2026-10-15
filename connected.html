@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20260915-6"><script type="module" src="connected.js?v=20260915-6"></script></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDV Nota 10 · Acesso</title><link rel="stylesheet" href="styles.css?v=20261015-1"><script type="module" src="connected.js?v=20261015-1"></script></head>
 <body class="connected-app auth-screen">
 <header class="portal-header">
  <div class="portal-header-inner">
@@ -14,13 +14,14 @@
  <div class="heading portal-heading"><div><span id="portal-eyebrow" class="eyebrow">PAINEL DE GESTÃO</span><h1 id="portal-heading-title">Bem-vindo ao PDV Nota 10</h1><p id="portal-heading-description">Gerencie os dados da campanha com acesso seguro e individual.</p></div></div>
  <section class="panel login-card" id="login-panel">
   <div class="login-intro"><span class="eyebrow">CAMPANHA PDV NOTA 10</span><h2>Excelência no ponto de venda reconhecida todos os meses.</h2><p>Acompanhe seu cumprimento de rota, registre conquistas e consulte sua posição individual entre outubro e dezembro.</p><div class="login-highlights"><span><b>100</b> pontos de rota</span><span><b>+50</b> conquista do mês</span></div></div>
-  <div class="login-access"><span class="eyebrow">ACESSO À PLATAFORMA</span><h2>Entre na sua conta</h2><p class="muted">Use o e-mail cadastrado pela administração.</p>
+  <div class="login-access"><span class="eyebrow">ACESSO À PLATAFORMA</span><h2 id="login-access-title">Entre na sua conta</h2><p id="login-access-copy" class="muted">Use o e-mail cadastrado pela administração.</p>
    <form id="login-form" class="login-form">
     <label>E-mail<input name="email" type="email" autocomplete="username" maxlength="254" placeholder="seuemail@empresa.com" required></label>
     <label>Senha<input name="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required></label>
     <button class="primary" id="login-button" disabled>Entrar</button>
+    <button type="button" id="show-first-access" class="access-link">É meu primeiro acesso</button>
    </form>
-   <details class="first-access"><summary>Primeiro acesso ou esqueci minha senha</summary><form id="first-access-form" class="login-form spaced"><label>E-mail cadastrado<input name="email" type="email" autocomplete="email" required maxlength="254"></label><button>Enviar link para definir a senha</button></form><p id="first-access-status" class="muted" role="status" aria-live="polite"></p></details>
+   <div id="first-access" class="first-access" hidden><ol class="access-steps"><li>Informe o e-mail já cadastrado pela administração.</li><li>Abra o link recebido no e-mail.</li><li>Crie sua senha e volte para entrar no aplicativo.</li></ol><form id="first-access-form" class="login-form"><label>E-mail cadastrado<input name="email" type="email" autocomplete="email" placeholder="seuemail@empresa.com" required maxlength="254"></label><button type="submit" class="primary">Enviar link para criar minha senha</button><button type="button" id="back-to-login" class="access-link">Voltar para o login</button></form><p id="first-access-status" class="access-feedback" role="status" aria-live="polite"></p></div>
    <p class="login-help">Não há cadastro público. Em um aparelho compartilhado, encerre a sessão ao terminar.</p>
   </div>
  </section>

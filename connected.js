@@ -57,6 +57,9 @@ function render(state){
  status.textContent=state.message||({checking:'Conferindo seu perfil…',ready:'Login e perfil confirmados. Ambiente conectado e pronto para uso.','signed-out':'Informe seus dados para entrar.','signing-out':'Encerrando sessão…'}[state.status]);
 }
 window.addEventListener('hashchange',()=>{if(currentProfile)showPage(currentProfile);});
+function showAccessMode(mode){const first=mode==='first',firstPanel=$('#first-access');form.hidden=first;firstPanel.hidden=!first;$('#login-access-title').textContent=first?'Crie sua senha':'Entre na sua conta';$('#login-access-copy').textContent=first?'Seu e-mail precisa ter sido cadastrado previamente pela administração.':'Use o e-mail cadastrado pela administração.';$('#first-access-status').textContent='';if(first){const loginEmail=form.elements.email.value.trim();if(loginEmail)$('#first-access-form').elements.email.value=loginEmail;setTimeout(()=>$('#first-access-form').elements.email.focus(),0);}else setTimeout(()=>form.elements.email.focus(),0);}
+$('#show-first-access').addEventListener('click',()=>showAccessMode('first'));
+$('#back-to-login').addEventListener('click',()=>showAccessMode('login'));
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(pending||!session)return;
  pending=true;$('#login-button').disabled=true;
@@ -67,7 +70,7 @@ form.addEventListener('submit',async event=>{
 });
 $('#logout').addEventListener('click',()=>session?.logout());
 $('#refresh-profile').addEventListener('click',()=>session?.refresh());
-$('#first-access-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.target.querySelector('button'),out=$('#first-access-status');button.disabled=true;try{await session.requestPassword(event.target.elements.email.value.trim());out.textContent='Se o e-mail estiver cadastrado, você receberá um link para definir sua senha. Confira também o spam.';}catch(error){out.textContent=connectionError(error);}finally{button.disabled=false;}});
+$('#first-access-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.target.querySelector('button[type="submit"]'),out=$('#first-access-status');button.disabled=true;out.classList.remove('success');out.textContent='Enviando o link…';try{await session.requestPassword(event.target.elements.email.value.trim());out.classList.add('success');out.textContent='Link enviado. Abra seu e-mail, crie a senha e depois volte para entrar. Se não encontrar a mensagem, confira a pasta de spam.';}catch(error){out.textContent=connectionError(error);}finally{button.disabled=false;}});
 // Recheck on foreground return; no polling or realtime database listeners.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!pending&&!clientView.isBusy()&&!teamView.isBusy()&&!campaignView.isBusy())session?.refresh();});
 try {session=await startSession(render);$('#login-button').disabled=false;}
