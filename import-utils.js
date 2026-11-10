@@ -35,8 +35,19 @@ export function parseRouteLines(lines){
   const t=line.match(/Equipe:\s*(\d+)/i);if(t){if(team&&team!==t[1])throw new Error('Mais de uma equipe no relatório.');team=t[1];continue;}
   const p=line.match(/^Promotor:\s*(\d+)\s*-\s*(.+)$/i);if(p){if(promoters.some(v=>v.sourceId===p[1]))throw new Error(`Promotor ${p[1]} repetido no relatório.`);current={sourceId:p[1],name:p[2],planned:0,valid:0,incomplete:0,stores:[],errors:[],reported:null};promoters.push(current);continue;}
   if(!current)continue;
-  const visit=line.match(/^(\d+)\s+(.+?)\s+(---|\d{2}:\d{2})\s+(---|\d{2}:\d{2})\s+(---|\d{2}:\d{2})$/);
-  if(visit){const [,code,name,start,end,duration]=visit;current.planned++;if(code==='0')current.errors.push('Loja com código 0.');if(current.stores.some(s=>s.code===code))current.errors.push(`Loja ${code} repetida.`);current.stores.push({code,name,start,end,duration});const both=start!=='---'&&end!=='---';const parse=s=>{const [h,m]=s.split(':').map(Number);return h<=23&&m<=59?h*60+m:NaN;};if(both&&Number.isFinite(parse(start))&&Number.isFinite(parse(end))&&parse(end)>=parse(start))current.valid++;else if(start!=='---'||end!=='---'){current.incomplete++;current.errors.push(`Loja ${code}: horários incompletos ou inválidos.`);}continue;}
+  const visit=line.match(/^(\d+)\s+(.+?)\s+(---|\d{2}:\d{2})\s+(---|\d{2}:\d{2})(?:\s+(---|\d{2}:\d{2}))?$/);
+  if(visit){
+   const [,code,name,start,end,duration='---']=visit;current.planned++;
+   if(code==='0')current.errors.push('Loja com código 0.');
+   if(current.stores.some(s=>s.code===code))current.errors.push(`Loja ${code} repetida.`);
+   current.stores.push({code,name,start,end,duration});
+   const parse=s=>{const [h,m]=s.split(':').map(Number);return h<=23&&m<=59?h*60+m:NaN;};
+   const startValid=start==='---'||Number.isFinite(parse(start)),endValid=end==='---'||Number.isFinite(parse(end));
+   if(!startValid||!endValid||(start!=='---'&&end!=='---'&&parse(end)<parse(start))){current.incomplete++;current.errors.push(`Loja ${code}: horários incompletos ou inválidos.`);}
+   else if(start!=='---'&&end!=='---')current.valid++;
+   else if(start!=='---'||end!=='---'){current.incomplete++;warnings.push(`${current.name}: loja ${code} com visita incompleta; conta apenas como prevista.`);}
+   continue;
+  }
   const total=line.match(/^\d{2}:\d{2}\s+(\d+)\s+\d{2}:\d{2}$/);if(total){current.reported=Number(total[1]);continue;}
   if(/^\d+\s+\S/.test(line)&&!/^\d{2}:/.test(line))current.errors.push(`Linha não reconhecida: ${line.slice(0,90)}`);
  }
