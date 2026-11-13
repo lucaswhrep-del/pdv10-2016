@@ -51,8 +51,24 @@ export function attachCampaign(getSession){let profile=null,busy=false,promoterV
    historyResult.replaceChildren(make('p',`${month.slice(5)}/${month.slice(0,4)}: ${days.length} ${days.length===1?'data com visitas importadas':'datas com visitas importadas'}.`));
    if(!days.length){historyResult.append(make('p','Nenhuma visita importada para este mês.','empty-state'));return;}
    const wrap=make('div',undefined,'table-wrap'),table=make('table'),head=document.createElement('thead'),headers=document.createElement('tr'),body=document.createElement('tbody');
-   for(const text of ['Data das visitas','Promotores com registro','Lojas previstas','Lojas realizadas','Última importação da data']){const th=make('th',text);th.scope='col';headers.append(th);}head.append(headers);
-   for(const day of days){const tr=document.createElement('tr');for(const value of [day.date.split('-').reverse().join('/'),day.promoters,day.planned,day.valid,day.importedAt?new Date(day.importedAt).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}):'Não registrada'])tr.append(make('td',value));body.append(tr);}
+   for(const text of ['Data das visitas','Promotores com registro','Lojas previstas','Lojas realizadas','Última importação da data','Ações']){const th=make('th',text);th.scope='col';headers.append(th);}head.append(headers);
+   for(const day of days){
+    const tr=document.createElement('tr'),dateLabel=day.date.split('-').reverse().join('/');
+    for(const value of [dateLabel,day.promoters,day.planned,day.valid,day.importedAt?new Date(day.importedAt).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}):'Não registrada'])tr.append(make('td',value));
+    const cell=make('td'),remove=make('button','Excluir visitas desta data');remove.type='button';remove.setAttribute('aria-label',`Excluir visitas de ${dateLabel}`);
+    remove.onclick=async()=>{
+     if(busy||profile?.role!=='admin'||profile.uid!==uid||$('#campaign-month').value!==month)return;
+     if(!window.confirm(`Excluir as visitas de ${dateLabel}?\n\nSerão removidos os registros de ${day.promoters} promotores: ${day.planned} lojas previstas e ${day.valid} realizadas. Esses registros deixarão de contar no cumprimento de rota e na pontuação.\n\nA exclusão abrange todos os registros desta data, mesmo que tenham sido enviados em mais de uma importação. Você poderá importar o PDF correto novamente.\n\nConfirmar exclusão?`))return;
+     lock(true);status.textContent=`Excluindo visitas de ${dateLabel}…`;
+     try{
+      const result=await getSession().campaignActions.deleteRouteImport({date:day.date,confirmationDate:day.date,expectedCount:day.promoters});
+      historyRequest++;historyResult.replaceChildren();lock(false);await load();
+      if(profile?.uid===uid&&profile?.role==='admin'&&$('#campaign-month').value===month)await historyButton.onclick();
+      status.textContent=`Visitas de ${dateLabel} excluídas: ${result.count} registros removidos. O PDF correto pode ser importado novamente.`;
+     }catch(error){status.textContent=error.message||'Não foi possível excluir. Consulte o histórico antes de tentar novamente.';}finally{lock(false);}
+    };
+    cell.append(remove);tr.append(cell);body.append(tr);
+   }
    table.append(head,body);wrap.append(table);historyResult.append(wrap,make('p','Horários de importação em Brasília. A presença de uma data confirma os registros salvos; não garante que todos os promotores do PDF foram importados.','muted'));
   }catch(error){if(request===historyRequest&&profile?.uid===uid)historyResult.replaceChildren(make('p',error.message||'Não foi possível consultar as datas. Tente novamente.','notice'));}
   finally{if(request===historyRequest)historyButton.disabled=false;}
