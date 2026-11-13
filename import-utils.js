@@ -38,7 +38,6 @@ export function parseRouteLines(lines){
   const visit=line.match(/^(\d+)\s+(.+?)\s+(---|\d{2}:\d{2})\s+(---|\d{2}:\d{2})(?:\s+(---|\d{2}:\d{2}))?$/);
   if(visit){
    const [,code,name,start,end,duration='---']=visit;current.planned++;
-   if(code==='0')current.errors.push('Loja com código 0.');
    if(current.stores.some(s=>s.code===code))current.errors.push(`Loja ${code} repetida.`);
    current.stores.push({code,name,start,end,duration});
    const parse=s=>{const [h,m]=s.split(':').map(Number);return h<=23&&m<=59?h*60+m:NaN;};
@@ -53,7 +52,17 @@ export function parseRouteLines(lines){
  }
  if(!date||!team||!promoters.length)throw new Error('Formato não reconhecido. Use o PDF diário de estatísticas com Data, Equipe e Promotor. PDFs digitalizados não são aceitos.');
  const parsed=new Date(`${date}T12:00:00Z`);if(!Number.isFinite(parsed.getTime())||parsed.toISOString().slice(0,10)!==date)throw new Error('Data inválida no relatório.');
- for(const p of promoters){if(p.reported===null)p.errors.push('Resumo de visitas não encontrado.');else if(p.reported!==p.valid)p.errors.push(`Resumo informa ${p.reported} visitas, mas foram reconhecidas ${p.valid}.`);if(!p.planned)warnings.push(`${p.name}: sem rota programada.`);}
+ for(const p of promoters){
+  const named=name=>name.toLocaleUpperCase('pt-BR');
+  for(const store of [...p.stores].filter(s=>s.code==='0')){
+   const matches=p.stores.filter(s=>s.code!=='0'&&named(s.name)===named(store.name));
+   if(store.start==='---'&&store.end==='---'&&store.duration==='---'&&matches.length===1){
+    p.planned--;p.stores.splice(p.stores.indexOf(store),1);
+    warnings.push(`${p.name}: linha com código 0 sem horários ignorada por repetir a loja ${matches[0].code} (${store.name}), já listada no relatório.`);
+   }else p.errors.push('Loja com código 0.');
+  }
+  if(p.reported===null)p.errors.push('Resumo de visitas não encontrado.');else if(p.reported!==p.valid)p.errors.push(`Resumo informa ${p.reported} visitas, mas foram reconhecidas ${p.valid}.`);if(!p.planned)warnings.push(`${p.name}: sem rota programada.`);
+ }
  return {date,month:date.slice(0,7),team,promoters,warnings};
 }
 export async function matchRegisteredRoutePromoters(report,resolveRoute){
