@@ -1,8 +1,8 @@
-import {startSession} from './firebase-session.js?v=20261015-2';
+import {startSession} from './firebase-session.js?v=20261113-route-delete';
 import {connectionError} from './firebase-access.js';
 import {attachClients} from './connected-clients.js?v=20260915-5';
 import {attachTeam} from './connected-team.js?v=20261015-2';
-import {attachCampaign} from './connected-campaign.js?v=20260915-6';
+import {attachCampaign} from './connected-campaign.js?v=20261113-route-delete';
 const $=selector=>document.querySelector(selector);
 const form=$('#login-form'),status=$('#session-status');
 let session,pending=false,currentProfile=null;
