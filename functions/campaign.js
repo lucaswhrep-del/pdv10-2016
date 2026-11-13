@@ -3,6 +3,7 @@ const {getAuth}=require('firebase-admin/auth');
 const {getFirestore,FieldValue,Timestamp}=require('firebase-admin/firestore');
 const {getStorage}=require('firebase-admin/storage');
 const db=getFirestore(),auth=getAuth(),bucket=getStorage().bucket();
+const {deleteRouteDate}=require('./route-deletion');
 const MONTHS=new Set(['2026-09','2026-10','2026-11','2026-12']),STAGES=['before','execution','persistence'],SIX_DAYS=6*24*60*60*1000;
 const RANKING_PRIZES=[800,500,400,300,300,300,200,200,150,150,150,150],CONQUEST_PRIZES=[200,200],MINIMUM_PRIZE_POINTS=150;
 const clean=(v,n=250)=>{const s=String(v??'').trim();if(!s||s.length>n)throw new HttpsError('invalid-argument','Campo obrigatório inválido.');return s;};
@@ -32,4 +33,5 @@ const chooseWinner=callable(async request=>{const supervisor=await actor(request
 
 const configurePrizes=callable(async request=>{const admin=await actor(request,['admin']),month=clean(request.data?.month,7);if(!MONTHS.has(month))throw new HttpsError('invalid-argument','Mês inválido.');await db.doc(`campaignConfig/${month}`).set({month,prizes:{ranking:RANKING_PRIZES,conquest:CONQUEST_PRIZES},eligibility:{minimumPoints:MINIMUM_PRIZE_POINTS},updatedBy:admin.uid,updatedAt:FieldValue.serverTimestamp()},{merge:true});return {ok:true};});
 
-module.exports={getCampaignDashboard,importRoutes,createConquest,confirmEvidence,uploadEvidence,getEvidence,reviewConquest,nominateConquest,chooseWinner,configurePrizes};
+const deleteRouteImport=callable(async request=>{const admin=await actor(request,['admin']);return deleteRouteDate({db,adminUid:admin.uid,input:request.data,timestamp:()=>FieldValue.serverTimestamp(),fail:(code,message)=>new HttpsError(code,message)});});
+module.exports={getCampaignDashboard,importRoutes,deleteRouteImport,createConquest,confirmEvidence,uploadEvidence,getEvidence,reviewConquest,nominateConquest,chooseWinner,configurePrizes};
