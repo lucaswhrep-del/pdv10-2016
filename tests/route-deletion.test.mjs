@@ -30,7 +30,7 @@ test('callable impede exclusão por visitante, promotor, supervisor e administra
   let transactions=0;const module={exports:{}};
   const db={doc:()=>({get:async()=>({exists:true,data:()=>profile})}),runTransaction:()=>{transactions++;throw Error('Não deveria chegar aqui');}};
   class HttpsError extends Error{constructor(code,message){super(message);this.code=code;}}
-  const modules={'firebase-functions/v2/https':{onCall:(_options,handler)=>handler,HttpsError},'firebase-admin/auth':{getAuth:()=>({})},'firebase-admin/firestore':{getFirestore:()=>db,FieldValue:{},Timestamp:{}},'firebase-admin/storage':{getStorage:()=>({bucket:()=>({})})},'./route-deletion':core};
+  const modules={'firebase-functions/v2/https':{onCall:(_options,handler)=>handler,HttpsError},'firebase-admin/auth':{getAuth:()=>({})},'firebase-admin/firestore':{getFirestore:()=>db,FieldValue:{},Timestamp:{}},'firebase-admin/storage':{getStorage:()=>({bucket:()=>({})})},'./route-deletion':core,'./route-query':{readAllDocuments:async()=>[]}};
   vm.runInNewContext(fs.readFileSync(new URL('../functions/campaign.js',import.meta.url),'utf8'),{module,require:name=>modules[name]});
   await assert.rejects(module.exports.deleteRouteImport({auth:profile?{uid:'u'}:null,data:{date:'2026-11-09',confirmationDate:'2026-11-09',expectedCount:3}}));
   assert.equal(transactions,0);
