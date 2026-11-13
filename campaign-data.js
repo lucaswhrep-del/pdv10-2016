@@ -3,6 +3,25 @@ export function createCampaignRepository({store,db,identity,profile}){
  function access(){const p=profile();if(!p||p.uid!==identity()?.uid)throw Error('Sessão inválida.');return p;}
  async function rows(name,month){const p=access(),parts=[store.where('month','==',month),store.limit(100)];if(p.role==='promoter')parts.push(store.where('owner','==',p.uid));else if(p.role==='supervisor')parts.push(store.where('supervisorId','==',p.uid));const snap=await store.getDocs(store.query(store.collection(db,name),...parts));return snap.docs.map(d=>({id:d.id,...d.data()}));}
  return {
+  async routeHistory(month){
+   const person=access();if(person.role!=='admin')throw Error('Consulta disponível apenas para administradores.');
+   if(!/^2026-(09|10|11|12)$/.test(month))throw Error('Mês fora da campanha.');
+   const dates=new Map();let cursor=null;
+   for(;;){
+    if(access().uid!==person.uid||access().role!=='admin')throw Error('Sessão alterada. Consulte novamente.');
+    const parts=[store.where('month','==',month),store.orderBy(store.documentId()),store.limit(100)];if(cursor)parts.push(store.startAfter(cursor));
+    const snap=await store.getDocs(store.query(store.collection(db,'routeDays'),...parts));
+    for(const doc of snap.docs){
+     const row=doc.data();if(!row.date||row.date.slice(0,7)!==month)continue;
+     let day=dates.get(row.date);if(!day){day={date:row.date,promoters:0,planned:0,valid:0,importedAt:null};dates.set(row.date,day);}
+     day.promoters++;day.planned+=Number(row.planned)||0;day.valid+=Number(row.valid)||0;
+     const stamp=row.createdAt?.toDate?row.createdAt.toDate().toISOString():typeof row.createdAt==='string'?row.createdAt:null;
+     if(stamp&&(!day.importedAt||stamp>day.importedAt))day.importedAt=stamp;
+    }
+    if(snap.docs.length<100)break;cursor=snap.docs.at(-1);
+   }
+   return [...dates.values()].sort((a,b)=>b.date.localeCompare(a.date));
+  },
   async dashboard(month){const p=access(),[routes,conquests,winner,config]=await Promise.all([rows('routeDays',month),rows('conquests',month),store.getDoc(store.doc(db,'winners',month)),store.getDoc(store.doc(db,'campaignConfig',month))]);let nominations=[];if(['admin','supervisor'].includes(p.role)){const parts=[store.where('month','==',month),store.limit(100)];if(p.role==='supervisor')parts.push(store.where('supervisorId','==',p.uid));const snap=await store.getDocs(store.query(store.collection(db,'nominations'),...parts));nominations=snap.docs.map(d=>({id:d.id,...d.data()}));}else if(p.role==='promoter'){const snap=await store.getDoc(store.doc(db,'nominations',`${month}_${p.uid}`));if(snap.exists())nominations=[{id:snap.id,...snap.data()}];}const winnerData=winner.exists()?winner.data():null,people=[...routes,...conquests,...nominations,...Object.values(winnerData?.selections||{})],owners=[...new Set(people.flatMap(x=>[x.owner,x.supervisorId]).filter(Boolean))],names={};await Promise.all(owners.map(async uid=>{const u=await store.getDoc(store.doc(db,'users',uid));names[uid]=u.exists()?(u.data().name||u.data().email):uid;}));const saved=config.exists()?config.data():null;return {routes,conquests,nominations,winner:winnerData,config:{...DEFAULT_CONFIG,...saved,prizes:saved?.prizes?.ranking?saved.prizes:DEFAULT_CONFIG.prizes,eligibility:saved?.eligibility?.minimumPoints?saved.eligibility:DEFAULT_CONFIG.eligibility},names};},
   async resolveRoute(sourceId){access();const code=await store.getDoc(store.doc(db,'routeCodes',String(sourceId)));if(!code.exists())return null;const owner=code.data().owner,user=await store.getDoc(store.doc(db,'users',owner));return user.exists()?{owner,sourceId:String(sourceId),...user.data()}:null;}
  };
