@@ -64,5 +64,8 @@
 .campaign-tabs button.active{background:#fff;color:var(--green);box-shadow:0 3px 12px #122d4014}
 .conquest-toolbar{display:grid;grid-template-columns:auto minmax(210px,1fr) minmax(190px,260px);align-items:end}
 .conquest-toolbar .conquest-count{white-space:nowrap;padding-bottom:11px}
+.supervisor-toolbar{grid-template-columns:auto repeat(3,minmax(160px,1fr))}
+@media(max-width:1000px){.supervisor-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.supervisor-toolbar{grid-template-columns:1fr}}
 .filter-empty{margin-top:14px}
 @media(max-width:720px){.campaign-tabs{grid-template-columns:1fr}.campaign-tabs button{text-align:left}.conquest-toolbar{grid-template-columns:1fr}.conquest-toolbar .conquest-count{padding-bottom:0}}
