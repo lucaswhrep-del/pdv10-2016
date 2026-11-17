@@ -1,4 +1,8 @@
 export const SIX_DAYS=6*24*60*60*1000;
+export function currentCampaignMonth(now=new Date()){
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).formatToParts(now);
+ return `${parts.find(p=>p.type==='year').value}-${parts.find(p=>p.type==='month').value}`;
+}
 export function routeScore(valid,planned){
  if(!Number.isInteger(valid)||!Number.isInteger(planned)||valid<0||planned<0||valid>planned)throw new Error('Informe totais inteiros válidos.');
  if(!planned)return {percent:null,points:null};
